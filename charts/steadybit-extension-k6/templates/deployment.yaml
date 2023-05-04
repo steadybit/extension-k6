@@ -34,7 +34,7 @@ spec:
             - name: STEADYBIT_EXTENSION_CLOUD_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "secret.name" . }}
+                  name: {{ include "k6.secret.name" . }}
                   key: cloud-api-key
             {{ end }}
           volumeMounts:

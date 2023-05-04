@@ -3,6 +3,6 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "secret.name" -}}
+{{- define "k6.secret.name" -}}
 {{- default "steadybit-extension-k6" .Values.k6.existingSecret -}}
 {{- end -}}
