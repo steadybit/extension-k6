@@ -7,12 +7,12 @@ package main
 import (
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
+	"github.com/steadybit/extension-k6/config"
+	"github.com/steadybit/extension-k6/extk6"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/exthealth"
 	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extlogging"
-	"github.com/steadybit/extension-scaffold/config"
-	"github.com/steadybit/extension-scaffold/extk6"
 )
 
 func main() {

@@ -27,7 +27,7 @@ $ docker run \
 ### Using Helm in Kubernetes
 
 ```sh
-$ helm repo add steadybit-extension-scaffold https://steadybit.github.io/extension-k6
+$ helm repo add steadybit-extension-k6 https://steadybit.github.io/extension-k6
 $ helm repo update
 $ helm upgrade steadybit-extension-k6 \
     --install \

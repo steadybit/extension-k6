@@ -31,6 +31,8 @@ spec:
           env:
             {{- include "extensionlib.deployment.env" (list .) | nindent 12 }}
           volumeMounts:
+            - name: tmp-dir
+              mountPath: /tmp
             {{- include "extensionlib.deployment.volumeMounts" (list .) | nindent 12 }}
           livenessProbe:
             httpGet:
@@ -40,7 +42,14 @@ spec:
             httpGet:
               path: /health/readiness
               port: 8088
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 12345 # defined in https://github.com/grafana/k6/blob/master/Dockerfile
+            runAsGroup: 12345
       volumes:
+        - name: tmp-dir
+          emptyDir: { }
         {{- include "extensionlib.deployment.volumes" (list .) | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

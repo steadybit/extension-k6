@@ -36,7 +36,7 @@ Changing the Helm chart without bumping the version will result in the following
 
 ```
 > Releasing charts...
-    Error: error creating GitHub release steadybit-extension-scaffold-1.0.0: POST https://api.github.com/repos/steadybit/extension-scaffold/releases: 422 Validation Failed [{Resource:Release Field:tag_name Code:already_exists Message:}]
+    Error: error creating GitHub release steadybit-extension-k6-1.0.0: POST https://api.github.com/repos/steadybit/extension-k6/releases: 422 Validation Failed [{Resource:Release Field:tag_name Code:already_exists Message:}]
 ```
 
 ## Contributor License Agreement (CLA)

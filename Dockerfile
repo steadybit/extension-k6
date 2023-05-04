@@ -28,19 +28,14 @@ RUN go build \
 ##
 ## Runtime
 ##
-FROM alpine:3.16
-
-ARG USERNAME=steadybit
-ARG USER_UID=1000
-
-RUN adduser -u $USER_UID -D $USERNAME
-
-USER $USERNAME
+# https://github.com/grafana/k6/blob/master/Dockerfile
+FROM grafana/k6:0.44.0
 
 WORKDIR /
 
 COPY --from=build /app/extension /extension
 
-EXPOSE 8080
+EXPOSE 8087
+EXPOSE 8088
 
 ENTRYPOINT ["/extension"]
