@@ -27,6 +27,9 @@ func main() {
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
 
 	action_kit_sdk.RegisterAction(extk6.NewK6LoadTestRunAction())
+	if config.Config.CloudApiToken != "" {
+		action_kit_sdk.RegisterAction(extk6.NewK6LoadTestCloudAction())
+	}
 
 	action_kit_sdk.InstallSignalHandler()
 
