@@ -30,6 +30,13 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
           env:
             {{- include "extensionlib.deployment.env" (list .) | nindent 12 }}
+            {{ if (or (.Values.k6.existingSecret) (.Values.k6.cloudApiKey)) -}}
+            - name: STEADYBIT_EXTENSION_CLOUD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "secret.name" . }}
+                  key: cloud-api-key
+            {{ end }}
           volumeMounts:
             - name: tmp-dir
               mountPath: /tmp

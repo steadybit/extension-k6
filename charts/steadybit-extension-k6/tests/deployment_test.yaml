@@ -24,4 +24,18 @@ tests:
               - client-cert-a
               - client-cert-a
     asserts:
-      - matchSnapshot: {}
+      - matchSnapshot: { }
+  - it: manifest should match snapshot with existing secret
+    set:
+      k6:
+        cloudApiKey: null
+        existingSecret: existing-secret
+    asserts:
+      - matchSnapshot: { }
+  - it: manifest should match snapshot with api key
+    set:
+      k6:
+        cloudApiKey: 111-222-333
+        existingSecret: null
+    asserts:
+      - matchSnapshot: { }
