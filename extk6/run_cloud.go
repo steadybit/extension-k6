@@ -7,7 +7,6 @@ package extk6
 import (
 	"context"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/extension-k6/config"
@@ -56,7 +55,7 @@ func (l *K6LoadTestCloudAction) Start(_ context.Context, state *K6LoadTestRunSta
 		return nil, extension_kit.ToError("Failed to login to k6 cloud.", err)
 	}
 	if err := cmdLogin.Wait(); err != nil {
-		log.Error().Msgf("Failed to login to k6 cloud.", err)
+		return nil, extension_kit.ToError("Failed to login to k6 cloud.", err)
 	}
 
 	return start(state)
