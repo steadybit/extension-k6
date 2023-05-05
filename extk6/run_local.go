@@ -56,7 +56,7 @@ func (l *K6LoadTestRunAction) Prepare(_ context.Context, state *K6LoadTestRunSta
 }
 
 func (l *K6LoadTestRunAction) Start(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StartResult, error) {
-	return start(state)
+	return start(state, "")
 }
 
 func (l *K6LoadTestRunAction) Status(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {

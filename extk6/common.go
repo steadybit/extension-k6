@@ -92,9 +92,13 @@ func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequ
 	return nil, nil
 }
 
-func start(state *K6LoadTestRunState) (*action_kit_api.StartResult, error) {
+func start(state *K6LoadTestRunState, token string) (*action_kit_api.StartResult, error) {
 	log.Info().Msgf("Starting k6 load test with command: %s", strings.Join(state.Command, " "))
 	cmd := exec.Command(state.Command[0], state.Command[1:]...)
+	cmd.Env = os.Environ()
+	if token != "" {
+		cmd.Env = append(cmd.Env, fmt.Sprintf("K6_CLOUD_TOKEN=%s", token))
+	}
 	cmdState := extcmd.NewCmdState(cmd)
 	state.CmdStateID = cmdState.Id
 	err := cmd.Start()
