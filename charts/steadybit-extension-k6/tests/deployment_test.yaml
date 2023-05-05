@@ -28,14 +28,14 @@ tests:
   - it: manifest should match snapshot with existing secret
     set:
       k6:
-        cloudApiKey: null
+        cloudApiToken: null
         existingSecret: existing-secret
     asserts:
       - matchSnapshot: { }
   - it: manifest should match snapshot with api key
     set:
       k6:
-        cloudApiKey: 111-222-333
+        cloudApiToken: 111-222-333
         existingSecret: null
     asserts:
       - matchSnapshot: { }

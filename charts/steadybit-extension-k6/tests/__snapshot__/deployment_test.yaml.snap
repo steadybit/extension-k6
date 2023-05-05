@@ -86,10 +86,10 @@ manifest should match snapshot with api key:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
-                - name: STEADYBIT_EXTENSION_CLOUD_API_KEY
+                - name: STEADYBIT_EXTENSION_CLOUD_API_TOKEN
                   valueFrom:
                     secretKeyRef:
-                      key: cloud-api-key
+                      key: cloud-api-token
                       name: steadybit-extension-k6
               image: ghcr.io/steadybit/extension-k6:latest
               imagePullPolicy: Always
@@ -144,10 +144,10 @@ manifest should match snapshot with existing secret:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
-                - name: STEADYBIT_EXTENSION_CLOUD_API_KEY
+                - name: STEADYBIT_EXTENSION_CLOUD_API_TOKEN
                   valueFrom:
                     secretKeyRef:
-                      key: cloud-api-key
+                      key: cloud-api-token
                       name: existing-secret
               image: ghcr.io/steadybit/extension-k6:latest
               imagePullPolicy: Always

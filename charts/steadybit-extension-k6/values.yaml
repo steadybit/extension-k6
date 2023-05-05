@@ -3,9 +3,9 @@
 # Declare variables to be passed into your templates.
 
 k6:
-  # k6.cloudApiKey -- The API key for the k6 cloud. (required only if K6 Cloud should be used)
-  cloudApiKey: ""
-  # k6.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the key cloud-api-key
+  # k6.cloudApiToken -- The API token for the k6 cloud. (required only if K6 Cloud should be used)
+  cloudApiToken: ""
+  # k6.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the key cloud-api-token
   existingSecret: null
 
 image:
