@@ -193,6 +193,11 @@ func extractErrorFromStdOut(lines []string) *string {
 }
 
 func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
+	if state.CmdStateID == "" {
+		log.Info().Msg("K6 not yet started, nothing to stop.")
+		return nil, nil
+	}
+
 	cmdState, err := extcmd.GetCmdState(state.CmdStateID)
 	if err != nil {
 		return nil, extension_kit.ToError("Failed to find command state", err)
