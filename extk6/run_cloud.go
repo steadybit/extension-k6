@@ -7,12 +7,14 @@ package extk6
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/extension-k6/config"
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extconversion"
 	"os/exec"
+	"strings"
 )
 
 type K6LoadTestCloudAction struct{}
@@ -51,10 +53,11 @@ func (l *K6LoadTestCloudAction) Prepare(_ context.Context, state *K6LoadTestRunS
 
 func (l *K6LoadTestCloudAction) Start(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StartResult, error) {
 	cmdLogin := exec.Command("k6", "login", "cloud", "-t", config.Config.CloudApiToken)
-	if err := cmdLogin.Start(); err != nil {
-		return nil, extension_kit.ToError("Failed to login to k6 cloud.", err)
-	}
-	if err := cmdLogin.Wait(); err != nil {
+	loggableToken := strings.Repeat("*", len(config.Config.CloudApiToken)-5) + config.Config.CloudApiToken[len(config.Config.CloudApiToken)-5:]
+	log.Info().Msg("Logging in to k6 cloud with token: " + loggableToken)
+	output, err := cmdLogin.CombinedOutput()
+	if err != nil {
+		log.Error().Msg(string(output))
 		return nil, extension_kit.ToError("Failed to login to k6 cloud.", err)
 	}
 
