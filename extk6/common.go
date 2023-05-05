@@ -128,6 +128,9 @@ func status(state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
 	// check if k6 is still running
 	exitCode := cmdState.Cmd.ProcessState.ExitCode()
 	stdOut := cmdState.GetLines(false)
+	for _, line := range stdOut {
+		log.Info().Msgf("---- %s", line)
+	}
 	if exitCode == -1 {
 		log.Debug().Msgf("K6 is still running")
 		result.Completed = false
@@ -206,6 +209,9 @@ func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 
 	// read Stout and Stderr and send it as Messages
 	stdOut := cmdState.GetLines(true)
+	for _, line := range stdOut {
+		log.Info().Msgf("---- %s", line)
+	}
 	filename := fmt.Sprintf("/tmp/steadybit/%v/k6_log.txt", state.ExecutionId) //Folder is managed by action_kit_sdk's file download handling
 	if err := extfile.AppendToFile(filename, stdOut); err != nil {
 		return nil, extension_kit.ToError("Failed to append log to file", err)
