@@ -31,7 +31,11 @@ func (l *K6LoadTestRunAction) NewEmptyState() K6LoadTestRunState {
 }
 
 func (l *K6LoadTestRunAction) Describe() action_kit_api.ActionDescription {
-	return *getActionDescription(fmt.Sprintf("%s.run", actionIdPrefix), "K6", "Execute a K6 load test.")
+	hint := action_kit_api.ActionHint{
+		Content: "Please note that load tests are executed by any one of the agents participating in the experiments, consuming resources of the system that it is installed in.",
+		Type:    action_kit_api.HintWarning,
+	}
+	return *getActionDescription(fmt.Sprintf("%s.run", actionIdPrefix), "K6", "Execute a K6 load test.", &hint)
 }
 
 func (l *K6LoadTestRunAction) Prepare(_ context.Context, state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {

@@ -36,7 +36,7 @@ type K6LoadTestRunConfig struct {
 	File        string
 }
 
-func getActionDescription(actionId string, label string, description string) *action_kit_api.ActionDescription {
+func getActionDescription(actionId string, label string, description string, hint *action_kit_api.ActionHint) *action_kit_api.ActionDescription {
 	return &action_kit_api.ActionDescription{
 		Id:          actionId,
 		Label:       label,
@@ -45,6 +45,7 @@ func getActionDescription(actionId string, label string, description string) *ac
 		Icon:        extutil.Ptr(targetIcon),
 		Kind:        action_kit_api.LoadTest,
 		TimeControl: action_kit_api.Internal,
+		Hint:        hint,
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:        "file",

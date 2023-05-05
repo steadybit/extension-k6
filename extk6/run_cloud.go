@@ -33,7 +33,7 @@ func (l *K6LoadTestCloudAction) NewEmptyState() K6LoadTestRunState {
 }
 
 func (l *K6LoadTestCloudAction) Describe() action_kit_api.ActionDescription {
-	return *getActionDescription(fmt.Sprintf("%s.cloud", actionIdPrefix), "K6 Cloud", "Execute a K6 load using K6 Cloud.")
+	return *getActionDescription(fmt.Sprintf("%s.cloud", actionIdPrefix), "K6 Cloud", "Execute a K6 load using K6 Cloud.", nil)
 }
 
 func (l *K6LoadTestCloudAction) Prepare(_ context.Context, state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
