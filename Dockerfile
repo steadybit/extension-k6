@@ -28,8 +28,22 @@ RUN go build \
 ##
 ## Runtime
 ##
-# https://github.com/grafana/k6/blob/master/Dockerfile
-FROM grafana/k6:0.44.0
+FROM alpine:3.17
+
+ARG TARGETARCH=amd64
+ADD https://github.com/grafana/k6/releases/download/v0.44.0/k6-v0.44.0-linux-$TARGETARCH.tar.gz /
+
+RUN tar -xzf k6-v0.44.0-linux-$TARGETARCH.tar.gz && \
+    rm k6-v0.44.0-linux-$TARGETARCH.tar.gz && \
+    mv k6-v0.44.0-linux-$TARGETARCH/k6 /usr/local/bin/k6 && \
+    rm -rf k6-v0.44.0-linux-$TARGETARCH
+
+ARG USERNAME=steadybit
+ARG USER_UID=10000
+
+RUN adduser -u $USER_UID -D $USERNAME
+
+USER $USERNAME
 
 WORKDIR /
 

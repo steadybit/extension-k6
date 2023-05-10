@@ -52,8 +52,8 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-            runAsUser: 12345 # defined in https://github.com/grafana/k6/blob/master/Dockerfile
-            runAsGroup: 12345
+            runAsUser: 10000
+            runAsGroup: 10000
       volumes:
         - name: tmp-dir
           emptyDir: { }
