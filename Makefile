@@ -59,4 +59,4 @@ run: tidy build
 .PHONY: container
 container:
 	# Prepare BuildX: docker buildx create --name multiarch --driver docker-container --use
-	docker buildx build --platform="linux/amd64,linux/arm64" -t extension-k6:latest .
+	docker buildx build --output=type=docker -t extension-k6:latest .
