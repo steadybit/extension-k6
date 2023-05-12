@@ -37,6 +37,13 @@ spec:
                   name: {{ include "k6.secret.name" . }}
                   key: cloud-api-token
             {{ end }}
+            {{- with .Values.extraEnv }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: tmp-dir
               mountPath: /tmp
