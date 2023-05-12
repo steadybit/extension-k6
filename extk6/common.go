@@ -139,7 +139,7 @@ func status(state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
 	} else if exitCode == 0 {
 		log.Info().Msgf("K6 run completed successfully")
 		result.Completed = true
-	} else if exitCode == 99 {
+	} else if exitCode == 97 || exitCode == 99 {
 		log.Info().Msgf("K6 run completed with threshold failures")
 		result.Completed = true
 		result.Error = &action_kit_api.ActionKitError{
