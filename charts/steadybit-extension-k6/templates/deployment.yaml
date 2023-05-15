@@ -48,6 +48,9 @@ spec:
             - name: tmp-dir
               mountPath: /tmp
             {{- include "extensionlib.deployment.volumeMounts" (list .) | nindent 12 }}
+            {{- with .Values.extraVolumeMounts  }}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /health/liveness
@@ -65,6 +68,9 @@ spec:
         - name: tmp-dir
           emptyDir: { }
         {{- include "extensionlib.deployment.volumes" (list .) | nindent 8 }}
+        {{- with .Values.extraVolumes  }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
       {{- toYaml . | nindent 8 }}

@@ -51,3 +51,13 @@ tests:
           name: env-secrets
     asserts:
       - matchSnapshot: {}
+  - it: manifest should match snapshot with extra volumes
+    set:
+      extraVolumes:
+        - name: example
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: example
+          mountPath: /foobar
+    asserts:
+      - matchSnapshot: {}
