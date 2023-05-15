@@ -4,15 +4,17 @@
 
 A [Steadybit](https://www.steadybit.com/) action implementation to integrate k6 load tests into Steadybit experiments.
 
+Learn about the capabilities of this extension in our [Reliability Hub](https://hub.steadybit.com/extension/com.github.steadybit.extension_k6).
+
 ## Configuration
 
-| Environment Variable                  | Meaning                                                                                                | Default |
-|---------------------------------------|--------------------------------------------------------------------------------------------------------|---------|
-| `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` | K6 Cloud API Token. If provided, the extension will have the option to run load tests in the k6 cloud. |         |
+| Environment Variable                  | Helm value         | Meaning                                                                                                | Reuired | Default |
+|---------------------------------------|--------------------|--------------------------------------------------------------------------------------------------------|---------|---------|
+| `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` | `k6.cloudApiToken` | K6 Cloud API Token. If provided, the extension will have the option to run load tests in the k6 cloud. | no      |         |
 
 The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
 
-## Running the Extension
+## Installation
 
 ### Using Docker
 
@@ -37,6 +39,8 @@ $ helm upgrade steadybit-extension-k6 \
     --namespace steadybit-extension \
     steadybit-extension-k6/steadybit-extension-k6
 ```
+
+If you want to use K6 Cloud you need to provide an k6 cloud api token. You can add it for example with `--set k6.cloudApiToken="111-222-333"`
 
 ## Register the extension
 
