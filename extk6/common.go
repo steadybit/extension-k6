@@ -237,7 +237,7 @@ func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 
 	// read return code and send it as Message
 	exitCode := cmdState.Cmd.ProcessState.ExitCode()
-	if exitCode != 0 {
+	if exitCode != 0 && exitCode != -1 {
 		messages = append(messages, action_kit_api.Message{
 			Level:   extutil.Ptr(action_kit_api.Error),
 			Message: fmt.Sprintf("K6 run failed with exit code %d", exitCode),
