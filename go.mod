@@ -6,10 +6,10 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rs/zerolog v1.29.1
-	github.com/steadybit/action-kit/go/action_kit_api/v2 v2.6.0
+	github.com/steadybit/action-kit/go/action_kit_api/v2 v2.6.1
 	github.com/steadybit/action-kit/go/action_kit_sdk v1.1.2
 	github.com/steadybit/action-kit/go/action_kit_test v1.0.0
-	github.com/steadybit/extension-kit v1.7.17
+	github.com/steadybit/extension-kit v1.7.18
 	github.com/stretchr/testify v1.8.2
 )
 

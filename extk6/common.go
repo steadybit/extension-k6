@@ -29,6 +29,7 @@ type K6LoadTestRunState struct {
 	Timestamp       string    `json:"timestamp"`
 	StdOutLineCount int       `json:"stdOutLineCount"`
 	ExecutionId     uuid.UUID `json:"executionId"`
+	CloudRunId      string    `json:"cloudRunId"`
 }
 
 type K6LoadTestRunConfig struct {
@@ -132,6 +133,7 @@ func status(state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
 	// check if k6 is still running
 	exitCode := cmdState.Cmd.ProcessState.ExitCode()
 	stdOut := cmdState.GetLines(false)
+	addCloudRunIdToState(stdOut, state)
 	stdOutToLog(stdOut)
 	if exitCode == -1 {
 		log.Debug().Msgf("K6 is still running")
@@ -168,6 +170,29 @@ func status(state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
 
 	result.Messages = extutil.Ptr(messages)
 	return &result, nil
+}
+
+func addCloudRunIdToState(lines []string, state *K6LoadTestRunState) {
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(strings.ReplaceAll(line, "\n", ""))
+		cloudRunId := substringAfter(trimmed, "output: https://app.k6.io/runs/")
+		if cloudRunId != nil {
+			log.Info().Msgf("Found cloud run id: %s", *cloudRunId)
+			state.CloudRunId = *cloudRunId
+		}
+	}
+}
+
+func substringAfter(value string, a string) *string {
+	pos := strings.LastIndex(value, a)
+	if pos == -1 {
+		return nil
+	}
+	adjustedPos := pos + len(a)
+	if adjustedPos >= len(value) {
+		return nil
+	}
+	return extutil.Ptr(value[adjustedPos:])
 }
 
 func stdOutToLog(lines []string) {
