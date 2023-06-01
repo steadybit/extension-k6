@@ -1,4 +1,4 @@
-<img src="./logo.webp" height="130" align="right" alt="Kong logo">
+<img src="./logo.webp" height="130" align="right" alt="K6 logo">
 
 # Steadybit extension-k6
 
