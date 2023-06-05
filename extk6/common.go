@@ -14,7 +14,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"time"
 )
 
 const (
@@ -23,13 +22,11 @@ const (
 )
 
 type K6LoadTestRunState struct {
-	Command         []string  `json:"command"`
-	Pid             int       `json:"pid"`
-	CmdStateID      string    `json:"cmdStateId"`
-	Timestamp       string    `json:"timestamp"`
-	StdOutLineCount int       `json:"stdOutLineCount"`
-	ExecutionId     uuid.UUID `json:"executionId"`
-	CloudRunId      string    `json:"cloudRunId"`
+	Command     []string  `json:"command"`
+	Pid         int       `json:"pid"`
+	CmdStateID  string    `json:"cmdStateId"`
+	ExecutionId uuid.UUID `json:"executionId"`
+	CloudRunId  string    `json:"cloudRunId"`
 }
 
 type K6LoadTestRunConfig struct {
@@ -80,7 +77,6 @@ func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequ
 	}
 
 	state.ExecutionId = request.ExecutionId
-	state.Timestamp = time.Now().Format(time.RFC3339)
 	state.Command = command
 
 	if config.Environment != nil {
