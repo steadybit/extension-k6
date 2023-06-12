@@ -58,5 +58,4 @@ run: tidy build
 ## container: build the container image
 .PHONY: container
 container:
-	# Prepare BuildX: docker buildx create --name multiarch --driver docker-container --use
-	docker buildx build --output=type=docker -t extension-k6:latest .
+	docker buildx build --build-arg ADDITIONAL_BUILD_PARAMS="-cover" --output=type=docker -t extension-k6:latest .
