@@ -19,7 +19,7 @@ The extension supports all environment variables provided by [steadybit/extensio
 ### Using Docker
 
 ```sh
-$ docker run \
+docker run \
   --rm \
   -p 8087 \
   --name steadybit-extension-k6 \
@@ -29,9 +29,9 @@ $ docker run \
 ### Using Helm in Kubernetes
 
 ```sh
-$ helm repo add steadybit-extension-k6 https://steadybit.github.io/extension-k6
-$ helm repo update
-$ helm upgrade steadybit-extension-k6 \
+helm repo add steadybit-extension-k6 https://steadybit.github.io/extension-k6
+helm repo update
+helm upgrade steadybit-extension-k6 \
     --install \
     --wait \
     --timeout 5m0s \
