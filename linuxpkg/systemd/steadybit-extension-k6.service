@@ -1,0 +1,18 @@
+[Unit]
+Description="steadybit extension k6"
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=/opt/steadybit/extension-k6/extension-k6
+EnvironmentFile=/etc/steadybit/extension-k6
+User=steadybit
+Group=steadybit
+SuccessExitStatus=0 143
+Restart=on-failure
+RestartSec=5s
+StandardOutput=append:/var/log/steadybit-extension-k6.log
+StandardError=append:/var/log/steadybit-extension-k6.log
+
+[Install]
+WantedBy=multi-user.target
