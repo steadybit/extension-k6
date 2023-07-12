@@ -40,6 +40,8 @@ RUN tar -xzf k6-v0.44.0-linux-$TARGETARCH.tar.gz && \
     mv k6-v0.44.0-linux-$TARGETARCH/k6 /usr/local/bin/k6 && \
     rm -rf k6-v0.44.0-linux-$TARGETARCH
 
+RUN apk add zip
+
 ARG USERNAME=steadybit
 ARG USER_UID=10000
 

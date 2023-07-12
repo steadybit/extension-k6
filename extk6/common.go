@@ -268,29 +268,67 @@ func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 	var artifacts []action_kit_api.Artifact
 
 	// check if log file exists and send it as artifact
-	_, err = os.Stat(filename)
+	stats, err := os.Stat(filename)
 	if err == nil { // file exists
-		content, err := extfile.File2Base64(filename)
-		if err != nil {
-			return nil, err
+		if stats.Size() > 1000000 {
+			//zip if more than 1mb
+			zippedLog := fmt.Sprintf("/tmp/steadybit/%v/k6_log.zip", state.ExecutionId)
+			log.Info().Msgf("Zip log with command: %s %s %s", "zip", zippedLog, filename)
+			zipCommand := exec.Command("zip", zippedLog, filename)
+			zipErr := zipCommand.Run()
+			if zipErr != nil {
+				return nil, extension_kit.ToError("Failed to zip log", err)
+			}
+			content, err := extfile.File2Base64(zippedLog)
+			if err != nil {
+				return nil, err
+			}
+			artifacts = append(artifacts, action_kit_api.Artifact{
+				Label: "$(experimentKey)_$(executionId)_k6_log.zip",
+				Data:  content,
+			})
+		} else {
+			content, err := extfile.File2Base64(filename)
+			if err != nil {
+				return nil, err
+			}
+			artifacts = append(artifacts, action_kit_api.Artifact{
+				Label: "$(experimentKey)_$(executionId)_k6_log.txt",
+				Data:  content,
+			})
 		}
-		artifacts = append(artifacts, action_kit_api.Artifact{
-			Label: "$(experimentKey)_$(executionId)_k6_log.txt",
-			Data:  content,
-		})
 	}
 
 	metricsFilename := fmt.Sprintf("/tmp/steadybit/%v/metrics.json", state.ExecutionId)
-	_, err = os.Stat(metricsFilename)
+	stats, err = os.Stat(metricsFilename)
 	if err == nil { // file exists
-		content, err := extfile.File2Base64(metricsFilename)
-		if err != nil {
-			return nil, err
+		if stats.Size() > 1000000 {
+			//zip if more than 1mb
+			zippedMetrics := fmt.Sprintf("/tmp/steadybit/%v/metrics.zip", state.ExecutionId)
+			log.Info().Msgf("Zip metrics with command: %s %s %s", "zip", zippedMetrics, metricsFilename)
+			zipCommand := exec.Command("zip", zippedMetrics, metricsFilename)
+			zipErr := zipCommand.Run()
+			if zipErr != nil {
+				return nil, extension_kit.ToError("Failed to zip metrics", err)
+			}
+			content, err := extfile.File2Base64(zippedMetrics)
+			if err != nil {
+				return nil, err
+			}
+			artifacts = append(artifacts, action_kit_api.Artifact{
+				Label: "$(experimentKey)_$(executionId)_k6_metrics.zip",
+				Data:  content,
+			})
+		} else {
+			content, err := extfile.File2Base64(metricsFilename)
+			if err != nil {
+				return nil, err
+			}
+			artifacts = append(artifacts, action_kit_api.Artifact{
+				Label: "$(experimentKey)_$(executionId)_k6_metrics.json",
+				Data:  content,
+			})
 		}
-		artifacts = append(artifacts, action_kit_api.Artifact{
-			Label: "$(experimentKey)_$(executionId)_k6_metrics.json",
-			Data:  content,
-		})
 	}
 
 	log.Debug().Msgf("Returning %d messages", len(messages))
