@@ -2,6 +2,10 @@
 
 ## v1.0.2
 
+ - add linux package build
+
+## v1.0.2
+
  - zip log files and metrics if > 1 MB
 
 ## v1.0.1
