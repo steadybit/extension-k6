@@ -16,16 +16,6 @@ The extension supports all environment variables provided by [steadybit/extensio
 
 ## Installation
 
-### Using Docker
-
-```sh
-docker run \
-  --rm \
-  -p 8087 \
-  --name steadybit-extension-k6 \
-  ghcr.io/steadybit/extension-k6:latest
-```
-
 ### Using Helm in Kubernetes
 
 ```sh
@@ -40,7 +30,24 @@ helm upgrade steadybit-extension-k6 \
     steadybit-extension-k6/steadybit-extension-k6
 ```
 
+### Using Docker
+
+```sh
+docker run \
+  --rm \
+  -p 8087 \
+  --name steadybit-extension-k6 \
+  ghcr.io/steadybit/extension-k6:latest
+```
+
 If you want to use K6 Cloud you need to provide an k6 cloud api token. You can add it for example with `--set k6.cloudApiToken="111-222-333"`
+
+### Linux Package
+
+Please use our [outpost-linux.sh script](https://docs.steadybit.com/install-and-configure/install-outpost-agent-preview/install-on-linux-hosts) to install the extension on your Linux machine.
+The script will download the latest version of the extension and install it using the package manager.
+
+After installing configure the extension by editing `/etc/steadybit/extension-k6` and then restart the service.
 
 ## Register the extension
 
