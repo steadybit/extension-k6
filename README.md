@@ -4,7 +4,7 @@
 
 A [Steadybit](https://www.steadybit.com/) action implementation to integrate k6 load tests into Steadybit experiments.
 
-Learn about the capabilities of this extension in our [Reliability Hub](https://hub.steadybit.com/extension/com.github.steadybit.extension_k6).
+Learn about the capabilities of this extension in our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extension_k6).
 
 ## Configuration
 
