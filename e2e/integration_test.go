@@ -38,7 +38,7 @@ func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 			Content:       []byte("import http from 'k6/http';\nexport default function() { http.get('https://www.steadybit.com'); }"),
 		},
 	}
-	exec, err := e.RunActionWithFiles("com.github.steadybit.extension_k6.run", nil, config, nil, files)
+	exec, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, config, nil, files)
 	require.NoError(t, err)
 	e2e.AssertProcessRunningInContainer(t, m, e.Pod, "extension", "k6", true)
 	//          /\      |‾‾| /‾‾/   /‾‾/
