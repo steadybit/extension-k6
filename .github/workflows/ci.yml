@@ -103,7 +103,7 @@ jobs:
             VERSION=${{ steps.meta.outputs.version }}
             REVISION=${{ github.sha }}
 
-      - name: Trigger test environment update
+      - name: Trigger test environment updates
         run: |
           curl -L \
           -X POST \
