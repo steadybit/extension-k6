@@ -22,6 +22,8 @@ RUN goreleaser build --snapshot="${BUILD_SNAPSHOT}" --single-target -o extension
 ##
 FROM alpine:3.17
 
+LABEL "steadybit.com.discovery-enabled"="false"
+
 ARG TARGETARCH=amd64
 ADD https://github.com/grafana/k6/releases/download/v0.44.0/k6-v0.44.0-linux-$TARGETARCH.tar.gz /
 
