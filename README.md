@@ -11,7 +11,7 @@ Learn about the capabilities of this extension in our [Reliability Hub](https://
 | Environment Variable                  | Helm value             | Meaning                                                                                                | Reuired | Default |
 |---------------------------------------|------------------------|--------------------------------------------------------------------------------------------------------|---------|---------|
 | `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` | `k6.cloudApiToken`     | K6 Cloud API Token. If provided, the extension will have the option to run load tests in the k6 cloud. | no      |         |
-| `HTTPS_PROXY`                         | via extraEnv variables | Configure the proxy to be used for Datadog communication.                                              | no      |         |
+| `HTTPS_PROXY`                         | via extraEnv variables | Configure the proxy to be used for K6 Cloud communication.                                             | no      |         |
 
 The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
 
@@ -56,7 +56,7 @@ Make sure to register the extension at the steadybit platform. Please refer to
 the [documentation](https://docs.steadybit.com/integrate-with-steadybit/extensions/extension-installation) for more information.
 
 ## Proxy
-To communicate to Datadog via a proxy, we need the environment variable `https_proxy` to be set.
+To communicate to K6 Cloud via a proxy, we need the environment variable `https_proxy` to be set.
 This can be set via helm using the extraEnv variable
 
 ```bash
