@@ -42,7 +42,7 @@ func getActionDescription(actionId string, label string, description string, hin
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:        extutil.Ptr(targetIcon),
 		Kind:        action_kit_api.LoadTest,
-		TimeControl: action_kit_api.Internal,
+		TimeControl: action_kit_api.TimeControlInternal,
 		Hint:        hint,
 		Parameters: []action_kit_api.ActionParameter{
 			{
