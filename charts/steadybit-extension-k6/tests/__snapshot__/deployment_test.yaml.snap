@@ -53,6 +53,7 @@ manifest should match snapshot using podAnnotations and Labels:
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -116,6 +117,7 @@ manifest should match snapshot with TLS:
                 - mountPath: /etc/extension/certificates/server-cert
                   name: certificate-server-cert
                   readOnly: true
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -181,6 +183,7 @@ manifest should match snapshot with api key:
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -242,6 +245,7 @@ manifest should match snapshot with existing secret:
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -305,6 +309,7 @@ manifest should match snapshot with extra env vars:
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -363,6 +368,7 @@ manifest should match snapshot with extra labels:
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -421,6 +427,7 @@ manifest should match snapshot with extra volumes:
                   name: tmp-dir
                 - mountPath: /foobar
                   name: example
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -491,6 +498,7 @@ manifest should match snapshot with mutual TLS:
                 - mountPath: /etc/extension/certificates/server-cert
                   name: certificate-server-cert
                   readOnly: true
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -561,6 +569,7 @@ manifest should match snapshot with mutual TLS using containerPaths:
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
@@ -617,6 +626,7 @@ manifest should match snapshot without TLS:
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
               name: tmp-dir
