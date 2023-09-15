@@ -201,7 +201,7 @@ func stdOutToLog(lines []string) {
 }
 
 func stdOutToMessages(lines []string) []action_kit_api.Message {
-	var messages []action_kit_api.Message
+	messages := make([]action_kit_api.Message, 0)
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(strings.ReplaceAll(line, "\n", ""))
 		if len(trimmed) > 0 {
@@ -265,7 +265,7 @@ func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 		})
 	}
 
-	var artifacts []action_kit_api.Artifact
+	artifacts := make([]action_kit_api.Artifact, 0)
 
 	// check if log file exists and send it as artifact
 	stats, err := os.Stat(filename)
