@@ -58,7 +58,7 @@ run: tidy build
 ## container: build the container image
 .PHONY: container
 container:
-		docker buildx build --build-arg BUILD_WITH_COVERAGE="true" -t extension-k6:latest --output=type=docker .
+	docker buildx build --build-arg BUILD_WITH_COVERAGE="true" -t extension-k6:latest --output=type=docker .
 
 .PHONY: linuxpkg
 linuxpkg:

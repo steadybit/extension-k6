@@ -4,6 +4,7 @@
 package e2e
 
 import (
+	"github.com/steadybit/action-kit/go/action_kit_test/client"
 	"github.com/steadybit/action-kit/go/action_kit_test/e2e"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -28,7 +29,7 @@ func TestWithMinikube(t *testing.T) {
 
 func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	config := struct{}{}
-	files := []e2e.File{
+	files := []client.File{
 		{
 			ParameterName: "file",
 			FileName:      "script.js",
