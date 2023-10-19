@@ -68,4 +68,4 @@ container:
 	docker buildx build --build-arg BUILD_WITH_COVERAGE="true" -t extension-k6:latest --output=type=docker .
 
 
-#linuxpkg: build the linux package.PHONY: linuxpkg --skip-sign
+#linuxpkg: build the linux package.PHONY: linuxpkg
