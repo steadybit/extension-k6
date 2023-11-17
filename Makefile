@@ -32,12 +32,7 @@ audit:
 	go vet ./...
 	go run honnef.co/go/tools/cmd/staticcheck@latest -checks=all,-ST1000,-U1000,-ST1003 ./...
 	go test -race -vet=off -coverprofile=coverage.out ./...
-	echo counter
-	cat e2e/covcounters.1.1.1
-	echo meta
-	cat e2e/covmeta.1
-	echo out
-	cat e2e/e2e-coverage-docker.out
+	ls e2e
 	go mod verify
 
 ## charttesting: Run Helm chart unit tests
