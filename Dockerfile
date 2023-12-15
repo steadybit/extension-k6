@@ -21,14 +21,15 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH goreleaser build --snapshot="${BUILD_SNAPS
 FROM alpine:3.19
 
 LABEL "steadybit.com.discovery-disabled"="true"
-
+ARG K6_VERSION=v0.48.0
 ARG TARGETARCH=amd64
-ADD https://github.com/grafana/k6/releases/download/v0.44.0/k6-v0.44.0-linux-$TARGETARCH.tar.gz /
 
-RUN tar -xzf k6-v0.44.0-linux-$TARGETARCH.tar.gz && \
-    rm k6-v0.44.0-linux-$TARGETARCH.tar.gz && \
-    mv k6-v0.44.0-linux-$TARGETARCH/k6 /usr/local/bin/k6 && \
-    rm -rf k6-v0.44.0-linux-$TARGETARCH
+ADD https://github.com/grafana/k6/releases/download/$K6_VERSION/k6-$K6_VERSION-linux-$TARGETARCH.tar.gz /
+
+RUN tar -xzf k6-$K6_VERSION-linux-$TARGETARCH.tar.gz && \
+    rm k6-$K6_VERSION-linux-$TARGETARCH.tar.gz && \
+    mv k6-$K6_VERSION-linux-$TARGETARCH/k6 /usr/local/bin/k6 && \
+    rm -rf k6-$K6_VERSION-linux-$TARGETARCH
 
 RUN apk add zip
 
