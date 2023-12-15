@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v1.0.9
+
+- Update dependencies
+
 ## v1.0.8
 
 - Added `pprof` endpoints for debugging purposes
