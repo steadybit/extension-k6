@@ -45,5 +45,7 @@ func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	//   /          \   |  |\  \ |  (‾)  |
 	//  / __________ \  |__| \__\ \_____/ .io
 	e2e.AssertLogContains(t, m, e.Pod, "/ __________ \\  |__| \\__\\ \\_____/ .io")
-	require.NoError(t, exec.Cancel())
+
+	err = exec.Wait()
+	require.NoError(t, err)
 }
