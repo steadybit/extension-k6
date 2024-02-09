@@ -45,7 +45,7 @@ If you want to use K6 Cloud you need to provide an k6 cloud api token. You can a
 
 ### Linux Package
 
-Please use our [outpost-linux.sh script](https://docs.steadybit.com/install-and-configure/install-outpost-agent-preview/install-on-linux-hosts) to install the extension on your Linux machine.
+Please use our [agent-linux.sh script](https://docs.steadybit.com/install-and-configure/install-agent/install-on-linux-hosts) to install the extension on your Linux machine.
 The script will download the latest version of the extension and install it using the package manager.
 
 After installing configure the extension by editing `/etc/steadybit/extension-k6` and then restart the service.
