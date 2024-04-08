@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.14
+
+- Update K6 to v0.50.0
+
 ## v1.0.13
 
 - Update dependencies
