@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.17 (next)
+
+- Update dependencies (go 1.22)
+
 ## v1.0.16
 
 - Update K6 to v0.50.0
