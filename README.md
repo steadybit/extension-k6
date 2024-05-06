@@ -29,7 +29,7 @@ helm upgrade steadybit-extension-k6 \
     --wait \
     --timeout 5m0s \
     --create-namespace \
-    --namespace steadybit-extension \
+    --namespace steadybit-agent \
     steadybit-extension-k6/steadybit-extension-k6
 ```
 
