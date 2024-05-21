@@ -3,6 +3,7 @@
 ## v1.0.17 (next)
 
 - Update dependencies (go 1.22)
+- Update K6 to v0.51.0
 
 ## v1.0.16
 
