@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 steadybit GmbH. All rights reserved.
+ * Copyright 2024 steadybit GmbH. All rights reserved.
  */
 
 package extk6
@@ -19,51 +19,49 @@ import (
 	"strings"
 )
 
-type K6LoadTestCloudAction struct{}
+type k6LoadTestCloudAction struct {
+	baseUrl string
+}
 
 // Make sure action implements all required interfaces
 var (
-	_ action_kit_sdk.Action[K6LoadTestRunState]           = (*K6LoadTestCloudAction)(nil)
-	_ action_kit_sdk.ActionWithStatus[K6LoadTestRunState] = (*K6LoadTestCloudAction)(nil)
-	_ action_kit_sdk.ActionWithStop[K6LoadTestRunState]   = (*K6LoadTestCloudAction)(nil)
+	_ action_kit_sdk.Action[K6LoadTestRunState]           = (*k6LoadTestCloudAction)(nil)
+	_ action_kit_sdk.ActionWithStatus[K6LoadTestRunState] = (*k6LoadTestCloudAction)(nil)
+	_ action_kit_sdk.ActionWithStop[K6LoadTestRunState]   = (*k6LoadTestCloudAction)(nil)
 )
 
 func NewK6LoadTestCloudAction() action_kit_sdk.Action[K6LoadTestRunState] {
-	return &K6LoadTestCloudAction{}
+	return &k6LoadTestCloudAction{}
 }
 
-func (l *K6LoadTestCloudAction) NewEmptyState() K6LoadTestRunState {
+func (l *k6LoadTestCloudAction) NewEmptyState() K6LoadTestRunState {
 	return K6LoadTestRunState{}
 }
 
-func (l *K6LoadTestCloudAction) Describe() action_kit_api.ActionDescription {
+func (l *k6LoadTestCloudAction) Describe() action_kit_api.ActionDescription {
 	return *getActionDescription(fmt.Sprintf("%s.cloud", actionIdPrefix), "K6 Cloud", "Execute a K6 load using K6 Cloud.", nil)
 }
 
-func (l *K6LoadTestCloudAction) Prepare(_ context.Context, state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
-	var config K6LoadTestRunConfig
-	if err := extconversion.Convert(request.Config, &config); err != nil {
-		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
+func (l *k6LoadTestCloudAction) Prepare(_ context.Context, state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
+	var runConfig K6LoadTestRunConfig
+	if err := extconversion.Convert(request.Config, &runConfig); err != nil {
+		return nil, extension_kit.ToError("Failed to unmarshal the runConfig.", err)
 	}
-	command := []string{
-		"k6",
-		"cloud",
-		config.File,
-	}
+	command := []string{"k6", "cloud", runConfig.File}
 	return prepare(state, request, command)
 }
 
-func (l *K6LoadTestCloudAction) Start(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StartResult, error) {
+func (l *k6LoadTestCloudAction) Start(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StartResult, error) {
 	loggableToken := strings.Repeat("*", len(config.Config.CloudApiToken)-5) + config.Config.CloudApiToken[len(config.Config.CloudApiToken)-5:]
 	log.Info().Msg("Use K6 cloud with token: " + loggableToken)
 	return start(state, config.Config.CloudApiToken)
 }
 
-func (l *K6LoadTestCloudAction) Status(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
+func (l *k6LoadTestCloudAction) Status(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
 	return status(state)
 }
 
-func (l *K6LoadTestCloudAction) Stop(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
+func (l *k6LoadTestCloudAction) Stop(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 	if state.CloudRunId != "" {
 		running, err := isCloudRunStillRunning(state.CloudRunId)
 		if err != nil {
@@ -81,44 +79,38 @@ func (l *K6LoadTestCloudAction) Stop(_ context.Context, state *K6LoadTestRunStat
 }
 
 func isCloudRunStillRunning(cloudRunId string) (bool, error) {
-	res, err := http.Get(fmt.Sprintf("https://api.k6.io/loadtests/v2/runs/%s", cloudRunId))
+	res, err := http.Get(fmt.Sprintf("%s/loadtests/v2/runs/%s", config.Config.CloudApiBaseUrl, cloudRunId))
 	if err != nil {
-		return false, extension_kit.ToError("Failed to read k6 cloud status.", err)
+		return false, fmt.Errorf("failed to get k6 cloud status: %s", err.Error())
+	} else if !(res.StatusCode >= http.StatusOK && res.StatusCode < http.StatusMultipleChoices) {
+		return false, fmt.Errorf("failed to get k6 cloud status: %d - %s", res.StatusCode, res.Status)
 	}
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 
 	var status StatusResponse
 	if err := json.NewDecoder(res.Body).Decode(&status); err != nil {
-		log.Error().Msgf("Failed to parse k6 cloud status: %s", err.Error())
-		return false, extension_kit.ToError("Failed to parse k6 cloud status.", err)
+		return false, fmt.Errorf("failed to get k6 cloud status: %s", err.Error())
 	}
 
 	return status.K6Run.RunStatus < 3, nil
 }
 
 func stopCloudRun(cloudRunId string) error {
-	posturl := fmt.Sprintf("https://api.k6.io/loadtests/v2/runs/%s/stop", cloudRunId)
-
-	// JSON body
-	body := []byte(`{}`)
-
-	// Create a HTTP post request
-	r, err := http.NewRequest("POST", posturl, bytes.NewBuffer(body))
+	r, err := http.NewRequest("POST", fmt.Sprintf("%s/loadtests/v2/runs/%s/stop", config.Config.CloudApiBaseUrl, cloudRunId), bytes.NewBufferString("{}"))
 	if err != nil {
-		return extension_kit.ToError("Failed to create post request to stop k6 cloud.", err)
+		return fmt.Errorf("failed to stop k6 cloud: %w", err)
 	}
 	r.Header.Add("Content-Type", "application/json")
 	r.Header.Add("Authorization", fmt.Sprintf("token %s", config.Config.CloudApiToken))
 
-	client := &http.Client{}
-	log.Info().Msgf("Stop K6 cloud at %s", posturl)
-	res, err := client.Do(r)
+	log.Info().Msgf("Stop K6 cloud at %s", r.URL)
+	res, err := http.DefaultClient.Do(r)
 	if err != nil {
-		return extension_kit.ToError("Failed to stop k6 cloud.", err)
+		return fmt.Errorf("failed to stop k6 cloud: %w", err)
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode == http.StatusOK {
+	defer func() { _ = res.Body.Close() }()
+	if res.StatusCode >= http.StatusOK && res.StatusCode < http.StatusMultipleChoices {
 		log.Info().Msg("K6 cloud stop requested.")
 	} else {
 		log.Info().Msgf("K6 cloud stop responded with HTTP Status %s.", res.Status)

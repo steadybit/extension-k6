@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 steadybit GmbH. All rights reserved.
+ * Copyright 2024 steadybit GmbH. All rights reserved.
  */
 
 package config
@@ -13,7 +13,8 @@ import (
 // through environment variables. Learn more through the documentation of the envconfig package.
 // https://github.com/kelseyhightower/envconfig
 type Specification struct {
-	CloudApiToken string `json:"cloudApiToken" split_words:"true" required:"false"`
+	CloudApiToken   string `json:"cloudApiToken" split_words:"true" required:"false"`
+	CloudApiBaseUrl string `json:"CloudApiBaseUrl" split_words:"true" required:"false" default:"https://api.k6.io"`
 }
 
 var (
