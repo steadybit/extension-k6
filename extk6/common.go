@@ -41,6 +41,7 @@ func getActionDescription(actionId string, label string, description string, hin
 		Description: description,
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:        extutil.Ptr(targetIcon),
+		Technology:  extutil.Ptr("K6"),
 		Kind:        action_kit_api.LoadTest,
 		TimeControl: action_kit_api.TimeControlInternal,
 		Hint:        hint,
