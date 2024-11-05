@@ -55,7 +55,7 @@ func TestFailedCommandStart(t *testing.T) {
 
 	// Then
 	require.Nil(t, result)
-	require.Equal(t, err.Error(), "Failed to start command.")
+	require.Equal(t, "Failed to start command.: exec: \"k6-not-available\": executable file not found in $PATH", err.Error())
 }
 
 func Test_isCloudRunStillRunning(t *testing.T) {
