@@ -37,7 +37,7 @@ func main() {
 		action_kit_sdk.RegisterAction(extk6.NewK6LoadTestCloudAction())
 	}
 
-	action_kit_sdk.InstallSignalHandler()
+	extsignals.ActivateSignalHandlers()
 	action_kit_sdk.RegisterCoverageEndpoints()
 
 	exthealth.SetReady(true)
