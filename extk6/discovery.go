@@ -14,21 +14,21 @@ import (
 	"os"
 )
 
-type jmeterLocationDiscovery struct{}
+type k6LocationDiscovery struct{}
 
 var (
-	_ discovery_kit_sdk.TargetDescriber = (*jmeterLocationDiscovery)(nil)
+	_ discovery_kit_sdk.TargetDescriber = (*k6LocationDiscovery)(nil)
 )
 
 func NewDiscovery() discovery_kit_sdk.TargetDiscovery {
-	discovery := &jmeterLocationDiscovery{}
+	discovery := &k6LocationDiscovery{}
 	return discovery_kit_sdk.NewCachedTargetDiscovery(discovery,
 		discovery_kit_sdk.WithRefreshTargetsNow(),
 		//No interval, target is not changing during runtime
 	)
 }
 
-func (e *jmeterLocationDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
+func (e *k6LocationDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
 		Id: targetType,
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
@@ -37,11 +37,11 @@ func (e *jmeterLocationDiscovery) Describe() discovery_kit_api.DiscoveryDescript
 	}
 }
 
-func (e *jmeterLocationDiscovery) DescribeTarget() discovery_kit_api.TargetDescription {
+func (e *k6LocationDiscovery) DescribeTarget() discovery_kit_api.TargetDescription {
 	return discovery_kit_api.TargetDescription{
 		Id:       targetType,
 		Label:    discovery_kit_api.PluralLabel{One: "K6 Location", Other: "K6 Locations"},
-		Category: extutil.Ptr("check"),
+		Category: extutil.Ptr("execution locations"),
 		Version:  extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:     extutil.Ptr(targetIcon),
 
@@ -62,7 +62,7 @@ func (e *jmeterLocationDiscovery) DescribeTarget() discovery_kit_api.TargetDescr
 	}
 }
 
-func (e *jmeterLocationDiscovery) DiscoverTargets(_ context.Context) ([]discovery_kit_api.Target, error) {
+func (e *k6LocationDiscovery) DiscoverTargets(_ context.Context) ([]discovery_kit_api.Target, error) {
 	attributes := make(map[string][]string)
 
 	var id, label string
