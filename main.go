@@ -9,6 +9,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
+	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
+	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-k6/config"
 	"github.com/steadybit/extension-k6/extk6"
 	"github.com/steadybit/extension-kit/extbuild"
@@ -34,6 +36,7 @@ func main() {
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
 
 	action_kit_sdk.RegisterAction(extk6.NewK6LoadTestRunAction())
+	discovery_kit_sdk.Register(extk6.NewDiscovery())
 	if config.Config.CloudApiToken != "" {
 		action_kit_sdk.RegisterAction(extk6.NewK6LoadTestCloudAction())
 	}
@@ -49,11 +52,13 @@ func main() {
 }
 
 type ExtensionListResponse struct {
-	action_kit_api.ActionList `json:",inline"`
+	action_kit_api.ActionList       `json:",inline"`
+	discovery_kit_api.DiscoveryList `json:",inline"`
 }
 
 func getExtensionList() ExtensionListResponse {
 	return ExtensionListResponse{
-		ActionList: action_kit_sdk.GetActionList(),
+		ActionList:    action_kit_sdk.GetActionList(),
+		DiscoveryList: discovery_kit_sdk.GetDiscoveryList(),
 	}
 }

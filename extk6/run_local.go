@@ -9,8 +9,10 @@ import (
 	"fmt"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
+	"github.com/steadybit/extension-k6/config"
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extconversion"
+	"github.com/steadybit/extension-kit/extutil"
 )
 
 type K6LoadTestRunAction struct{}
@@ -35,7 +37,25 @@ func (l *K6LoadTestRunAction) Describe() action_kit_api.ActionDescription {
 		Content: "Please note that load tests are executed by the k6 extension participating in the experiment, consuming resources of the system that it is installed in.",
 		Type:    action_kit_api.HintWarning,
 	}
-	return *getActionDescription(fmt.Sprintf("%s.run", actionIdPrefix), "K6", "Execute a K6 load test.", &hint)
+	description := *getActionDescription(fmt.Sprintf("%s.run", actionIdPrefix), "K6", "Execute a K6 load test.", &hint)
+
+	if config.Config.EnableLocationSelection {
+		description.Parameters = append(description.Parameters, action_kit_api.ActionParameter{
+			Name:  "-",
+			Label: "Filter K6 Locations",
+			Type:  action_kit_api.ActionParameterTypeTargetSelection,
+			Order: extutil.Ptr(3),
+		})
+		description.TargetSelection = extutil.Ptr(action_kit_api.TargetSelection{
+			TargetType: targetType,
+			DefaultBlastRadius: extutil.Ptr(action_kit_api.DefaultBlastRadius{
+				Mode:  action_kit_api.DefaultBlastRadiusModeMaximum,
+				Value: 1,
+			}),
+			MissingQuerySelection: extutil.Ptr(action_kit_api.MissingQuerySelectionIncludeAll),
+		})
+	}
+	return description
 }
 
 func (l *K6LoadTestRunAction) Prepare(_ context.Context, state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {

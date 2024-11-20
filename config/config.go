@@ -13,8 +13,13 @@ import (
 // through environment variables. Learn more through the documentation of the envconfig package.
 // https://github.com/kelseyhightower/envconfig
 type Specification struct {
-	CloudApiToken   string `json:"cloudApiToken" split_words:"true" required:"false"`
-	CloudApiBaseUrl string `json:"CloudApiBaseUrl" split_words:"true" required:"false" default:"https://api.k6.io"`
+	KubernetesClusterName   string `json:"kubernetesClusterName" split_words:"true" required:"false"`
+	KubernetesNodeName      string `json:"kubernetesNodeName" split_words:"true" required:"false"`
+	KubernetesPodName       string `json:"kubernetesPodName" split_words:"true" required:"false"`
+	KubernetesNamespace     string `json:"kubernetesNamespace" split_words:"true" required:"false"`
+	EnableLocationSelection bool   `json:"enableLocationSelection" split_words:"true" required:"false"`
+	CloudApiToken           string `json:"cloudApiToken" split_words:"true" required:"false"`
+	CloudApiBaseUrl         string `json:"CloudApiBaseUrl" split_words:"true" required:"false" default:"https://api.k6.io"`
 }
 
 var (
