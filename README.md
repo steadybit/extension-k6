@@ -8,10 +8,11 @@ Learn about the capabilities of this extension in our [Reliability Hub](https://
 
 ## Configuration
 
-| Environment Variable                  | Helm value             | Meaning                                                                                                | Reuired | Default |
-|---------------------------------------|------------------------|--------------------------------------------------------------------------------------------------------|---------|---------|
-| `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` | `k6.cloudApiToken`     | K6 Cloud API Token. If provided, the extension will have the option to run load tests in the k6 cloud. | no      |         |
-| `HTTPS_PROXY`                         | via extraEnv variables | Configure the proxy to be used for K6 Cloud communication.                                             | no      |         |
+| Environment Variable                            | Helm value                | Meaning                                                                                                                                                                                              | Reuired | Default |
+|-------------------------------------------------|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|---------|
+| `STEADYBIT_EXTENSION_CLOUD_API_TOKEN`           | `k6.cloudApiToken`        | K6 Cloud API Token. If provided, the extension will have the option to run load tests in the k6 cloud.                                                                                               | no      |         |
+| `STEADYBIT_EXTENSION_ENABLE_LOCATION_SELECTION` | `enableLocationSelection` | By default, the platform will select a random instance when executing actions from this extension. If you enable location selection, users can optionally specify the location via target selection. | no      | false   |
+| `HTTPS_PROXY`                                   | via extraEnv variables    | Configure the proxy to be used for K6 Cloud communication.                                                                                                                                           | no      |         |
 
 The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
 
