@@ -78,12 +78,13 @@ manifest should match snapshot using podAnnotations and Labels:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -170,15 +171,16 @@ manifest should match snapshot with TLS:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
                 - mountPath: /etc/extension/certificates/server-cert
                   name: certificate-server-cert
                   readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -270,12 +272,13 @@ manifest should match snapshot with api key:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -363,12 +366,13 @@ manifest should match snapshot with existing secret:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -458,12 +462,13 @@ manifest should match snapshot with extra env vars:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -548,12 +553,13 @@ manifest should match snapshot with extra labels:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -636,14 +642,15 @@ manifest should match snapshot with extra volumes:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
                 - mountPath: /foobar
                   name: example
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -734,9 +741,6 @@ manifest should match snapshot with mutual TLS:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
@@ -746,6 +750,10 @@ manifest should match snapshot with mutual TLS:
                 - mountPath: /etc/extension/certificates/server-cert
                   name: certificate-server-cert
                   readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -842,12 +850,13 @@ manifest should match snapshot with mutual TLS using containerPaths:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -930,14 +939,14 @@ manifest should match snapshot with podSecurityContext:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
           securityContext:
+            runAsNonRoot: true
             runAsUser: 2222
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -1020,13 +1029,14 @@ manifest should match snapshot with priority class:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
           priorityClassName: my-priority-class
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -1109,12 +1119,13 @@ manifest should match snapshot without TLS:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -1199,12 +1210,13 @@ should add cluster name from global values:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -1289,12 +1301,13 @@ should add cluster name from local values:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
@@ -1379,12 +1392,13 @@ should enable location selection:
                   drop:
                     - ALL
                 readOnlyRootFilesystem: true
-                runAsGroup: 10000
-                runAsNonRoot: true
-                runAsUser: 10000
               volumeMounts:
                 - mountPath: /tmp
                   name: tmp-dir
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           serviceAccountName: steadybit-extension-k6
           volumes:
             - emptyDir: {}
