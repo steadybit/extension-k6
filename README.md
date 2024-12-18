@@ -54,7 +54,7 @@ helm upgrade steadybit-extension-k6 \
     --timeout 5m0s \
     --create-namespace \
     --namespace steadybit-agent \
-    --set k6.cloudApiToken="111-222-333"
+    --set k6.cloudApiToken="111-222-333" \
     steadybit-extension-k6/steadybit-extension-k6
 ```
 
