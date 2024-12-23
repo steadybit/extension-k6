@@ -39,12 +39,12 @@ func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	exec, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, config, nil, files)
 	require.NoError(t, err)
 	e2e.AssertProcessRunningInContainer(t, m, e.Pod, "extension", "k6", true)
-	//          /\      |‾‾| /‾‾/   /‾‾/
-	//     /\  /  \     |  |/  /   /  /
-	//    /  \/    \    |     (   /   ‾‾\
-	//   /          \   |  |\  \ |  (‾)  |
-	//  / __________ \  |__| \__\ \_____/ .io
-	e2e.AssertLogContains(t, m, e.Pod, "/ __________ \\  |__| \\__\\ \\_____/ .io")
+	///        \      Grafana   /‾‾/                                                                                                                                                                                                                                                                                                                                                                                                                  │
+	//   /\  /  \     |\  __   /  /                                                                                                                                                                                                                                                                                                                                                                                                              │
+	//  /  \/    \    | |/ /  /   ‾‾\                                                                                                                                                                                                                                                                                                                                                                                                           │
+	// /          \   |   (  |  (‾)  |                                                                                                                                                                                                                                                                                                                                                                                                         │
+	/// __________ \  |_|\_\  \_____/
+	e2e.AssertLogContains(t, m, e.Pod, "/ __________ \\  |_|\\_\\  \\_____/")
 
 	err = exec.Wait()
 	require.NoError(t, err)
