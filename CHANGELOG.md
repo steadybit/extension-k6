@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.20
+
+- Update dependencies
+- Update K6 to v0.55.1
+
 ## v1.0.19
 
 - Optional location selection (can be enabled via STEADYBIT_EXTENSION_ENABLE_LOCATION_SELECTION env var, requires platform => 2.1.27)
