@@ -21,7 +21,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH goreleaser build --snapshot="${BUILD_SNAPS
 FROM alpine:3.21
 
 LABEL "steadybit.com.discovery-disabled"="true"
-ARG K6_VERSION=v0.51.0
+ARG K6_VERSION=v0.55.1
 ARG TARGETARCH=amd64
 
 ADD https://github.com/grafana/k6/releases/download/$K6_VERSION/k6-$K6_VERSION-linux-$TARGETARCH.tar.gz /
