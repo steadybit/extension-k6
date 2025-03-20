@@ -20,6 +20,7 @@ import (
 	"github.com/steadybit/extension-kit/extruntime"
 	"github.com/steadybit/extension-kit/extsignals"
 	_ "go.uber.org/automaxprocs" // Importing automaxprocs automatically adjusts GOMAXPROCS.
+	_ "k8s.io/client-go/util/consistencydetector"
 )
 
 func main() {
