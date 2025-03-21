@@ -52,6 +52,8 @@ USER $USER_UID
 WORKDIR /
 
 COPY --from=build /app/extension /extension
+COPY --from=build /app/licenses /licenses
+
 
 EXPOSE 8087 8088
 
