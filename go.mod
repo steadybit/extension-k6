@@ -4,7 +4,7 @@ go 1.24
 toolchain go1.24.1
 
 require (
-	github.com/KimMachineGun/automemlimit v0.7.1
+	github.com/KimMachineGun/automemlimit v0.7.2
 	github.com/google/uuid v1.6.0
 	github.com/jarcoal/httpmock v1.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
