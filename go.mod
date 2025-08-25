@@ -16,7 +16,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.7.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.3.0
 	github.com/steadybit/extension-kit v1.10.0
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.0
 	go.uber.org/automaxprocs v1.6.0
 	k8s.io/client-go v0.33.3
 )
