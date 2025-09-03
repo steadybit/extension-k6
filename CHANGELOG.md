@@ -1,8 +1,9 @@
 # Changelog
 
-## v1.0.21 (next)
+## v1.0.21
 
 - Updated dependencies
+- Environment Variables are optional
 
 ## v1.0.20
 

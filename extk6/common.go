@@ -65,7 +65,7 @@ func getActionDescription(actionId string, label string, description string, hin
 				Label:       "Environment variables",
 				Description: extutil.Ptr("Environment variables which will be accessible in your k6 script by ${__ENV.foobar}"),
 				Type:        action_kit_api.ActionParameterTypeKeyValue,
-				Required:    extutil.Ptr(true),
+				Required:    extutil.Ptr(false),
 				Order:       extutil.Ptr(2),
 			},
 		},
