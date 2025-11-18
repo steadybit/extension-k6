@@ -30,8 +30,11 @@ LABEL "steadybit.com.discovery-disabled"="true"
 LABEL "version"="${VERSION}"
 LABEL "revision"="${REVISION}"
 RUN echo "$VERSION" > /version.txt && echo "$REVISION" > /revision.txt
-ARG K6_VERSION=v0.55.1
+
+ARG K6_VERSION=v0.57.0
 ARG TARGETARCH=amd64
+
+RUN echo "$K6_VERSION for architecture $TARGETARCH" > /k6-version.txt
 
 ADD https://github.com/grafana/k6/releases/download/$K6_VERSION/k6-$K6_VERSION-linux-$TARGETARCH.tar.gz /
 
