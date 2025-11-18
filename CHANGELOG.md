@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.22
+
+- Updated dependencies
+- Update K6 to v0.57.0
+- Fixed ARM image
+
 ## v1.0.21
 
 - Updated dependencies
