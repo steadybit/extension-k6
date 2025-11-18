@@ -32,7 +32,7 @@ LABEL "revision"="${REVISION}"
 RUN echo "$VERSION" > /version.txt && echo "$REVISION" > /revision.txt
 
 ARG K6_VERSION=v0.57.0
-ARG TARGETARCH=amd64
+ARG TARGETARCH
 
 RUN echo "$K6_VERSION for architecture $TARGETARCH" > /k6-version.txt
 
