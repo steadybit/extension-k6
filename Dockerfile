@@ -31,7 +31,7 @@ LABEL "version"="${VERSION}"
 LABEL "revision"="${REVISION}"
 RUN echo "$VERSION" > /version.txt && echo "$REVISION" > /revision.txt
 
-ARG K6_VERSION=v0.57.0
+ARG K6_VERSION=v1.4.1
 ARG TARGETARCH
 
 RUN echo "$K6_VERSION for architecture $TARGETARCH" > /k6-version.txt

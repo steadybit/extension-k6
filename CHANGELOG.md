@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.0 (next release)
+
+- Update K6 from v0.57.0 to v1.4.1
+
 ## v1.0.23
 
 - Updated dependencies
