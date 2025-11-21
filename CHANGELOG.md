@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.1.0 (next release)
+## v1.1.0
 
 - Update K6 from v0.57.0 to v1.4.1
 
