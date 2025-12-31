@@ -3,4 +3,4 @@ vulnerabilities:
     paths:
       - usr/local/bin/k6
     statement: Wait for a new K6-Release
-    expired_at: 2025-12-31
+    expired_at: 2026-01-31
