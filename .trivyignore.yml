@@ -9,13 +9,13 @@ vulnerabilities:
       - usr/local/bin/k6
     statement: Wait for a new K6-Release
     expired_at: 2026-06-01
-  - id: CVE-2025-61726
+  - id: CVE-2025-61730
     paths:
-      - extension
-    statement: wait for goreleaser v2.14.0
-    expired_at: 2026-03-01
-  - id: CVE-2025-61728
+      - usr/local/bin/k6
+    statement: Wait for a new K6-Release
+    expired_at: 2026-06-01
+  - id: CVE-2025-68121
     paths:
-      - extension
-    statement: wait for goreleaser v2.14.0
-    expired_at: 2026-03-01
+      - usr/local/bin/k6
+    statement: Wait for a new K6-Release
+    expired_at: 2026-06-01
