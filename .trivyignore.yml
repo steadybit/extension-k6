@@ -1,24 +1,4 @@
 vulnerabilities:
-  - id: CVE-2025-61726
-    paths:
-      - usr/local/bin/k6
-    statement: Wait for a new K6-Release
-    expired_at: 2026-06-01
-  - id: CVE-2025-61728
-    paths:
-      - usr/local/bin/k6
-    statement: Wait for a new K6-Release
-    expired_at: 2026-06-01
-  - id: CVE-2025-61730
-    paths:
-      - usr/local/bin/k6
-    statement: Wait for a new K6-Release
-    expired_at: 2026-06-01
-  - id: CVE-2025-68121
-    paths:
-      - usr/local/bin/k6
-    statement: Wait for a new K6-Release
-    expired_at: 2026-06-01
   - id: CVE-2026-24051
     paths:
       - usr/local/bin/k6
