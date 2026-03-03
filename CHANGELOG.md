@@ -1,5 +1,9 @@
 # Changelog
 
+## (next)
+
+- Update dependencies (k6 v1.6.1)
+
 ## v1.1.4
 
 - Update dependencies

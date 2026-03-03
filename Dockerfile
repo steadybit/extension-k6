@@ -41,9 +41,8 @@ ADD https://github.com/grafana/k6/releases/download/$K6_VERSION/k6-$K6_VERSION-l
 RUN tar -xzf k6-$K6_VERSION-linux-$TARGETARCH.tar.gz && \
     rm k6-$K6_VERSION-linux-$TARGETARCH.tar.gz && \
     mv k6-$K6_VERSION-linux-$TARGETARCH/k6 /usr/local/bin/k6 && \
-    rm -rf k6-$K6_VERSION-linux-$TARGETARCH
-
-RUN apk add zip
+    rm -rf k6-$K6_VERSION-linux-$TARGETARCH && \
+    apk add zip
 
 ARG USERNAME=steadybit
 ARG USER_UID=10000
@@ -56,7 +55,6 @@ WORKDIR /
 
 COPY --from=build /app/extension /extension
 COPY --from=build /app/licenses /licenses
-
 
 EXPOSE 8087 8088
 
