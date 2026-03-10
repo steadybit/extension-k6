@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.6
+
+- Update alpine packages in Docker image to address CVEs
+- Update dependencies
+
 ## v1.1.5
 
 - Update dependencies (k6 v1.6.1)
