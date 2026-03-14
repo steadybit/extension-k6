@@ -40,9 +40,9 @@ func main() {
 	discovery_kit_sdk.Register(extk6.NewDiscovery())
 	if config.Config.CloudApiToken != "" {
 		action_kit_sdk.RegisterAction(extk6.NewK6LoadTestCloudAction())
-
-		exthttp.RegisterHttpHandler("/", exthttp.IfNoneMatchHandler(func() string { return startedAt }, exthttp.GetterAsHandler(getExtensionList)))
 	}
+
+	exthttp.RegisterHttpHandler("/", exthttp.IfNoneMatchHandler(func() string { return startedAt }, exthttp.GetterAsHandler(getExtensionList)))
 
 	extsignals.ActivateSignalHandlers()
 	action_kit_sdk.RegisterCoverageEndpoints()
