@@ -6,6 +6,43 @@ A [Steadybit](https://www.steadybit.com/) action implementation to integrate k6 
 
 Learn about the capabilities of this extension in our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extension_k6).
 
+## Included k6 Extensions
+
+The Docker image ships a custom k6 binary built with [xk6](https://github.com/grafana/xk6), including the following extensions.
+
+### Official Grafana Extensions
+
+| Extension                                                                        | Description                                    |
+|----------------------------------------------------------------------------------|------------------------------------------------|
+| [xk6-dns](https://github.com/grafana/xk6-dns)                                  | DNS resolution                                 |
+| [xk6-faker](https://github.com/grafana/xk6-faker)                              | Random fake data generation                    |
+| [xk6-icmp](https://github.com/grafana/xk6-icmp)                                | ICMP ping                                      |
+| [xk6-mqtt](https://github.com/grafana/xk6-mqtt)                                | MQTT protocol                                  |
+| [xk6-redis](https://github.com/grafana/xk6-redis)                              | Redis client                                   |
+| [xk6-sql](https://github.com/grafana/xk6-sql)                                  | SQL database access                            |
+| [xk6-sql-driver-mysql](https://github.com/grafana/xk6-sql-driver-mysql)        | MySQL driver for xk6-sql                       |
+| [xk6-sql-driver-postgres](https://github.com/grafana/xk6-sql-driver-postgres)  | PostgreSQL driver for xk6-sql                  |
+| [xk6-ssh](https://github.com/grafana/xk6-ssh)                                  | SSH commands                                   |
+| [xk6-subcommand-explore](https://github.com/grafana/xk6-subcommand-explore)    | Explore k6 extensions for automatic resolution |
+
+### Community Extensions
+
+| Extension                                                                                    | Description                    |
+|----------------------------------------------------------------------------------------------|--------------------------------|
+| [xk6-disruptor](https://github.com/grafana/xk6-disruptor)                                  | Fault injection for k6         |
+| [xk6-kafka](https://github.com/mostafa/xk6-kafka)                                          | Apache Kafka load testing      |
+| [xk6-kubernetes](https://github.com/grafana/xk6-kubernetes)                                | Kubernetes API interaction     |
+| [xk6-loki](https://github.com/grafana/xk6-loki)                                            | Loki log load testing          |
+| [xk6-msgpack](https://github.com/Tango-Tango/xk6-msgpack)                                  | MessagePack serialization      |
+| [xk6-client-prometheus-remote](https://github.com/grafana/xk6-client-prometheus-remote)    | Prometheus remote write client |
+| [xk6-sql-driver-azuresql](https://github.com/grafana/xk6-sql-driver-azuresql)              | Azure SQL driver for xk6-sql   |
+| [xk6-sql-driver-clickhouse](https://github.com/grafana/xk6-sql-driver-clickhouse)          | ClickHouse driver for xk6-sql  |
+| [xk6-sql-driver-sqlserver](https://github.com/grafana/xk6-sql-driver-sqlserver)            | SQL Server driver for xk6-sql  |
+| [xk6-sse](https://github.com/phymbert/xk6-sse)                                              | Server-Sent Events (SSE)       |
+| [xk6-tls](https://github.com/grafana/xk6-tls)                                              | TLS metrics and configuration  |
+| [xk6-client-tracing](https://github.com/grafana/xk6-client-tracing)                        | Distributed tracing client     |
+| [xk6-subcommand-httpbin](https://github.com/grafana/xk6-subcommand-httpbin)                | Built-in httpbin test server   |
+
 ## Configuration
 
 | Environment Variable                            | Helm value                | Meaning                                                                                                                                                                                              | Required | Default |
