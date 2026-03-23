@@ -1,7 +1,8 @@
 # Changelog
 
-## (next)
+## v1.2.0
 
+- Add same k6 extensions as supported on k6 cloud
 - Support if-none-match for the extension list endpoint
 
 ## v1.1.6
