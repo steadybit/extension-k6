@@ -2,6 +2,10 @@ package extk6
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"strings"
+
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
@@ -11,9 +15,6 @@ import (
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extfile"
 	"github.com/steadybit/extension-kit/extutil"
-	"os"
-	"os/exec"
-	"strings"
 )
 
 const (
@@ -113,7 +114,7 @@ func start(state *K6LoadTestRunState, token string) (*action_kit_api.StartResult
 	go func() {
 		cmdErr := cmd.Wait()
 		if cmdErr != nil {
-			log.Error().Msgf("Failed to execute k6: %s", cmdErr)
+			log.Warn().Msgf("Failed to execute k6: %s", cmdErr)
 		}
 	}()
 	log.Info().Msgf("Started load test.")
