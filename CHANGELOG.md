@@ -1,5 +1,9 @@
 # Changelog
 
+## (next)
+
+- Update to k6 v1.7.1
+
 ## v1.2.0
 
 - Add same k6 extensions as supported on k6 cloud

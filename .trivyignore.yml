@@ -1,15 +1,10 @@
 vulnerabilities:
-  - id: CVE-2026-24051
-    paths:
-      - usr/local/bin/k6
-    statement: Wait for a new K6-Release
-    expired_at: 2026-06-01
-  - id: CVE-2026-25679
-    paths:
-      - usr/local/bin/k6
-    statement: Wait for a new K6-Release
-    expired_at: 2026-06-01
   - id: CVE-2026-33186
+    paths:
+      - usr/local/bin/k6
+    statement: Wait for a new K6-Release
+    expired_at: 2026-06-01
+  - id: CVE-2026-39883
     paths:
       - usr/local/bin/k6
     statement: Wait for a new K6-Release
