@@ -1,8 +1,11 @@
 # Changelog
 
-## (next)
+## v1.2.1
 
+- Bump Go to 1.25.9
 - Update to k6 v1.7.1
+- Log k6 exit code on warn
+- Update dependencies
 
 ## v1.2.0
 
