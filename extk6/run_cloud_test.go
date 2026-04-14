@@ -20,15 +20,15 @@ import (
 func TestPrepareExtractsState(t *testing.T) {
 	// Given
 	request := extutil.JsonMangle(action_kit_api.PrepareActionRequestBody{
-		Config: map[string]interface{}{
+		Config: map[string]any{
 			"duration": 1000 * 60,
 			"notify":   true,
 			"file":     "test.js",
 		},
 		Target: nil,
-		ExecutionContext: extutil.Ptr(action_kit_api.ExecutionContext{
-			ExperimentUri: extutil.Ptr("<uri-to-experiment>"),
-			ExecutionUri:  extutil.Ptr("<uri-to-execution>"),
+		ExecutionContext: new(action_kit_api.ExecutionContext{
+			ExperimentUri: new("<uri-to-experiment>"),
+			ExecutionUri:  new("<uri-to-execution>"),
 		}),
 	})
 	action := k6LoadTestCloudAction{}
