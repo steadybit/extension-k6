@@ -10,7 +10,6 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-k6/config"
 	"github.com/steadybit/extension-kit/extbuild"
-	"github.com/steadybit/extension-kit/extutil"
 	"os"
 )
 
@@ -32,7 +31,7 @@ func (e *k6LocationDiscovery) Describe() discovery_kit_api.DiscoveryDescription 
 	return discovery_kit_api.DiscoveryDescription{
 		Id: targetType,
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr(fmt.Sprintf("%ds", 300)),
+			CallInterval: new(fmt.Sprintf("%ds", 300)),
 		},
 	}
 }
@@ -41,9 +40,9 @@ func (e *k6LocationDiscovery) DescribeTarget() discovery_kit_api.TargetDescripti
 	return discovery_kit_api.TargetDescription{
 		Id:       targetType,
 		Label:    discovery_kit_api.PluralLabel{One: "K6 Location", Other: "K6 Locations"},
-		Category: extutil.Ptr("execution locations"),
+		Category: new("execution locations"),
 		Version:  extbuild.GetSemverVersionStringOrUnknown(),
-		Icon:     extutil.Ptr(targetIcon),
+		Icon:     new(targetIcon),
 
 		Table: discovery_kit_api.Table{
 			Columns: []discovery_kit_api.Column{

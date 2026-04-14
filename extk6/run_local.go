@@ -44,11 +44,11 @@ func (l *K6LoadTestRunAction) Describe() action_kit_api.ActionDescription {
 			Name:  "-",
 			Label: "Filter K6 Locations",
 			Type:  action_kit_api.ActionParameterTypeTargetSelection,
-			Order: extutil.Ptr(3),
+			Order: new(3),
 		})
-		description.TargetSelection = extutil.Ptr(action_kit_api.TargetSelection{
+		description.TargetSelection = new(action_kit_api.TargetSelection{
 			TargetType: targetType,
-			DefaultBlastRadius: extutil.Ptr(action_kit_api.DefaultBlastRadius{
+			DefaultBlastRadius: new(action_kit_api.DefaultBlastRadius{
 				Mode:  action_kit_api.DefaultBlastRadiusModeMaximum,
 				Value: 1,
 			}),

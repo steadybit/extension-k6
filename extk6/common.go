@@ -44,8 +44,8 @@ func getActionDescription(actionId string, label string, description string, hin
 		Label:       label,
 		Description: description,
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Icon:        extutil.Ptr(actionIcon),
-		Technology:  extutil.Ptr("K6"),
+		Icon:        new(actionIcon),
+		Technology:  new("K6"),
 		Kind:        action_kit_api.LoadTest,
 		TimeControl: action_kit_api.TimeControlInternal,
 		Hint:        hint,
@@ -53,27 +53,27 @@ func getActionDescription(actionId string, label string, description string, hin
 			{
 				Name:        "file",
 				Label:       "K6 Script",
-				Description: extutil.Ptr("Upload your K6 Script"),
+				Description: new("Upload your K6 Script"),
 				Type:        action_kit_api.ActionParameterTypeFile,
-				Required:    extutil.Ptr(true),
-				AcceptedFileTypes: extutil.Ptr([]string{
+				Required:    new(true),
+				AcceptedFileTypes: new([]string{
 					".js",
 				}),
-				Order: extutil.Ptr(1),
+				Order: new(1),
 			},
 			{
 				Name:        "environment",
 				Label:       "Environment variables",
-				Description: extutil.Ptr("Environment variables which will be accessible in your k6 script by ${__ENV.foobar}"),
+				Description: new("Environment variables which will be accessible in your k6 script by ${__ENV.foobar}"),
 				Type:        action_kit_api.ActionParameterTypeKeyValue,
-				Required:    extutil.Ptr(false),
-				Order:       extutil.Ptr(2),
+				Required:    new(false),
+				Order:       new(2),
 			},
 		},
-		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("5s"),
+		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
+			CallInterval: new("5s"),
 		}),
-		Stop: extutil.Ptr(action_kit_api.MutatingEndpointReference{}),
+		Stop: new(action_kit_api.MutatingEndpointReference{}),
 	}
 }
 
@@ -171,7 +171,7 @@ func status(state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
 	messages := stdOutToMessages(stdOut)
 	log.Debug().Msgf("Returning %d messages", len(messages))
 
-	result.Messages = extutil.Ptr(messages)
+	result.Messages = new(messages)
 	return &result, nil
 }
 
@@ -195,7 +195,7 @@ func substringAfter(value string, a string) *string {
 	if adjustedPos >= len(value) {
 		return nil
 	}
-	return extutil.Ptr(value[adjustedPos:])
+	return new(value[adjustedPos:])
 }
 
 func stdOutToLog(lines []string) {
@@ -340,8 +340,8 @@ func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 
 	log.Debug().Msgf("Returning %d messages", len(messages))
 	return &action_kit_api.StopResult{
-		Artifacts: extutil.Ptr(artifacts),
-		Messages:  extutil.Ptr(messages),
+		Artifacts: new(artifacts),
+		Messages:  new(messages),
 	}, nil
 }
 
