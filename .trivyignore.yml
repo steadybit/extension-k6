@@ -9,3 +9,8 @@ vulnerabilities:
       - usr/local/bin/k6
     statement: Wait for a new K6-Release
     expired_at: 2026-06-01
+  - id: CVE-2026-35469
+    paths:
+      - usr/local/bin/k6
+    statement: Wait for a new K6-Release
+    expired_at: 2026-06-01
