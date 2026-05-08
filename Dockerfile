@@ -35,7 +35,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
   --with github.com/grafana/xk6-faker@latest \
   --with github.com/grafana/xk6-icmp@latest \
   --with github.com/grafana/xk6-mqtt@latest \
-  --with github.com/grafana/xk6-redis@latest \
+  --with github.com/grafana/xk6-redis@v0.3.6 \
   --with github.com/grafana/xk6-sql@latest \
   --with github.com/grafana/xk6-sql-driver-mysql@latest \
   --with github.com/grafana/xk6-sql-driver-postgres@latest \
@@ -68,11 +68,9 @@ LABEL "version"="${VERSION}"
 LABEL "revision"="${REVISION}"
 RUN echo "$VERSION" > /version.txt && echo "$REVISION" > /revision.txt
 
-ARG K6_VERSION=v1.6.1
-
-RUN echo "$K6_VERSION" > /k6-version.txt
-
 COPY --from=k6-builder /k6 /usr/local/bin/k6
+
+RUN /usr/local/bin/k6 --version > /k6-version.txt
 
 ARG USERNAME=steadybit
 ARG USER_UID=10000
