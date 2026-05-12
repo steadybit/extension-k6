@@ -28,7 +28,7 @@ ARG TARGETARCH
 ARG K6_VERSION=v1.7.1
 
 RUN apk add --no-cache git
-RUN go install go.k6.io/xk6/cmd/xk6@v1.4.1
+RUN go install go.k6.io/xk6/cmd/xk6@v1.4.1 # NOSONAR: xk6 is pinned to an exact tag; transitive deps are locked by xk6's own go.mod
 
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
   --with github.com/grafana/xk6-dns@latest \
