@@ -1,5 +1,9 @@
 # Changelog
 
+## (next)
+
+- Update to k6 v1.8.0
+
 ## v1.2.4
 
 - Support discovery group attribute via `STEADYBIT_EXTENSION_DISCOVERY_GROUP` env var (or `discovery.group` Helm value) — when set, the extension adds `steadybit.group=<value>` to every discovered target
