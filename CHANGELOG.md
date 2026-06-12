@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.2.5
+
+- chore(deps): bump goreleaser/goreleaser from v2.15.4 to v2.16.0
+- chore: update to go 1.26.4
+- chore: update to k6 v1.8.0 (#177)
+- feat: add weekly auto patch-release workflow
+
 ## (next)
 
 - Update to k6 v1.8.0
