@@ -58,7 +58,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
 ##
 ## Runtime
 ##
-FROM alpine:3.23
+FROM alpine:3.24
 
 ARG VERSION=unknown
 ARG REVISION=unknown
