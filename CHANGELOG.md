@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- fix: don't panic when starting a K6 cloud run with an API token shorter than 5 characters, and stop logging the last characters of the cloud API token
+
 ## v1.2.6
 
 - chore(deps): bump alpine from 3.23 to 3.24

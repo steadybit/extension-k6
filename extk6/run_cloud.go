@@ -16,7 +16,6 @@ import (
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extconversion"
 	"net/http"
-	"strings"
 )
 
 type k6LoadTestCloudAction struct {
@@ -52,8 +51,7 @@ func (l *k6LoadTestCloudAction) Prepare(_ context.Context, state *K6LoadTestRunS
 }
 
 func (l *k6LoadTestCloudAction) Start(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StartResult, error) {
-	loggableToken := strings.Repeat("*", len(config.Config.CloudApiToken)-5) + config.Config.CloudApiToken[len(config.Config.CloudApiToken)-5:]
-	log.Info().Msg("Use K6 cloud with token: " + loggableToken)
+	log.Info().Msg("Using K6 cloud with the configured API token")
 	return start(state, config.Config.CloudApiToken)
 }
 
