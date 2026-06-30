@@ -112,7 +112,7 @@ func start(state *K6LoadTestRunState, token string) (*action_kit_api.StartResult
 
 	state.Pid = cmd.Process.Pid
 	go func() {
-		cmdErr := cmd.Wait()
+		cmdErr := cmdState.Wait()
 		if cmdErr != nil {
 			log.Warn().Msgf("Failed to execute k6: %s", cmdErr)
 		}
@@ -134,7 +134,7 @@ func status(state *K6LoadTestRunState) (*action_kit_api.StatusResult, error) {
 	var result action_kit_api.StatusResult
 
 	// check if k6 is still running
-	exitCode := cmdState.Cmd.ProcessState.ExitCode()
+	exitCode := cmdState.ExitCode()
 	stdOut := cmdState.GetLines(false)
 	addCloudRunIdToState(stdOut, state)
 	stdOutToLog(stdOut)
@@ -264,7 +264,7 @@ func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 	messages := stdOutToMessages(stdOut)
 
 	// read return code and send it as Message
-	exitCode := cmdState.Cmd.ProcessState.ExitCode()
+	exitCode := cmdState.ExitCode()
 	if exitCode != 0 && exitCode != -1 {
 		messages = append(messages, action_kit_api.Message{
 			Level:   extutil.Ptr(action_kit_api.Error),

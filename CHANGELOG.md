@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix: don't panic when starting a K6 cloud run with an API token shorter than 5 characters, and stop logging the last characters of the cloud API token
+- fix: resolve the data race on the K6 process exit code between the process-reaping goroutine and the status/stop handlers (via `extcmd.CmdState.Wait`/`ExitCode`)
 
 ## v1.2.6
 
