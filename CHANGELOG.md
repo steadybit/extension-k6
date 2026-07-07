@@ -1,8 +1,16 @@
 # Changelog
 
-## Unreleased
+## v1.2.7
 
+- chore(deps): bump github.com/steadybit/action-kit/go/action_kit_sdk
+- chore(deps): bump github.com/steadybit/discovery-kit/go/discovery_kit_sdk
+- chore(deps): bump github.com/steadybit/extension-kit
+- chore(deps): bump goreleaser/goreleaser from v2.16.0 to v2.17.0
+- chore: add Claude Code workflows (#185)
+- chore: silence SonarQube finding on secrets: inherit in Claude workflows
+- fix: avoid panic and token disclosure when starting a K6 cloud run
 - fix: don't panic when starting a K6 cloud run with an API token shorter than 5 characters, and stop logging the last characters of the cloud API token
+- fix: resolve data race on the process exit code (#187)
 - fix: resolve the data race on the K6 process exit code between the process-reaping goroutine and the status/stop handlers (via `extcmd.CmdState.Wait`/`ExitCode`)
 
 ## v1.2.6
