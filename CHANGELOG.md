@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.3.0
+
+- feat: update bundled k6 to v2.1.0
+- fix: adapt to k6 v2 cloud CLI change (`k6 cloud run` instead of `k6 cloud`)
+
 ## v1.2.9
 
 - ci: skip build on .trivyignore.yml-only changes [skip ci]

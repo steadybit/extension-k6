@@ -46,7 +46,7 @@ func (l *k6LoadTestCloudAction) Prepare(_ context.Context, state *K6LoadTestRunS
 	if err := extconversion.Convert(request.Config, &runConfig); err != nil {
 		return nil, extension_kit.ToError("Failed to unmarshal the runConfig.", err)
 	}
-	command := []string{"k6", "cloud", runConfig.File}
+	command := []string{"k6", "cloud", "run", runConfig.File}
 	return prepare(state, request, command)
 }
 
