@@ -25,7 +25,7 @@ FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS k6-builder
 
 ARG TARGETOS
 ARG TARGETARCH
-ARG K6_VERSION=v1.8.0
+ARG K6_VERSION=v2.1.0
 
 RUN apk add --no-cache git
 RUN go install go.k6.io/xk6/cmd/xk6@v1.4.1
