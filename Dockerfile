@@ -31,6 +31,7 @@ RUN apk add --no-cache git
 RUN go install go.k6.io/xk6/cmd/xk6@v1.4.1
 
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
+  --replace google.golang.org/grpc=google.golang.org/grpc@v1.82.1 \
   --with github.com/grafana/xk6-dns@latest \
   --with github.com/grafana/xk6-faker@latest \
   --with github.com/grafana/xk6-icmp@latest \
