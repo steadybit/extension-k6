@@ -2,6 +2,12 @@
 
 ## v1.3.0
 
+- chore(deps): update dependencies
+- feat: update bundled k6 to v2.1.0 (#194)
+- fix: force grpc 1.82.1 in k6 binary to resolve GHSA-hrxh-6v49-42gf
+
+## v1.3.0
+
 - feat: update bundled k6 to v2.1.0
 - fix: adapt to k6 v2 cloud CLI change (`k6 cloud run` instead of `k6 cloud`)
 
