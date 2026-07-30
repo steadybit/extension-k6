@@ -1,1 +1,4 @@
-vulnerabilities: []
+vulnerabilities:
+  - id: GHSA-mx64-mj3q-7prj
+    statement: Waiting for upstream fix in github.com/hamba/avro/v2
+    expired_at: 2027-01-01
