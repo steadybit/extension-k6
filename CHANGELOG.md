@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.1
+
+- chore(deps): bump github.com/jarcoal/httpmock from 1.4.1 to 1.4.2
+- chore(deps): bump goreleaser/goreleaser from v2.17.0 to v2.17.1
+- feat: support filtering targets out of discovery
+
 ## v1.3.0
 
 - chore(deps): update dependencies
