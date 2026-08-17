@@ -1,6 +1,6 @@
 module github.com/steadybit/extension-k6
 
-go 1.26
+go 1.26.5
 
 require (
 	github.com/KimMachineGun/automemlimit v0.7.5
@@ -14,7 +14,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.7.1
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.4.1
 	github.com/steadybit/extension-kit v1.11.1
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.0
 	k8s.io/client-go v0.36.3
 )
 
