@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.3.2
+
+- chore(deps): bump github.com/stretchr/testify from 1.11.1 to 1.12.0
+- chore(deps): bump steadybit kits and drop Go patch pin (#198)
+- chore(deps): pin goreleaser build toolchain to go1.26.6
+- chore(deps): use go-version-file, drop patch pin (go 1.26) (#197)
+
 ## v1.3.1
 
 - chore(deps): bump github.com/jarcoal/httpmock from 1.4.1 to 1.4.2
