@@ -54,7 +54,6 @@ nfpms:
       - steadybit-extension-k6
     dependencies:
       - k6
-      - zip
     bindir: /opt/steadybit/extension-k6
     contents:
       - src: ./linuxpkg/systemd
