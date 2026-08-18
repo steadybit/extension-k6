@@ -1,9 +1,12 @@
 package extk6
 
 import (
+	"archive/zip"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/google/uuid"
@@ -272,70 +275,14 @@ func stop(state *K6LoadTestRunState) (*action_kit_api.StopResult, error) {
 		})
 	}
 
-	artifacts := make([]action_kit_api.Artifact, 0)
-
-	// check if log file exists and send it as artifact
-	stats, err := os.Stat(filename)
-	if err == nil { // file exists
-		if stats.Size() > 1000000 {
-			//zip if more than 1mb
-			zippedLog := fmt.Sprintf("/tmp/steadybit/%v/k6_log.zip", state.ExecutionId)
-			log.Info().Msgf("Zip log with command: %s %s %s", "zip", zippedLog, filename)
-			zipCommand := exec.Command("zip", zippedLog, filename)
-			zipErr := zipCommand.Run()
-			if zipErr != nil {
-				return nil, extension_kit.ToError("Failed to zip log", err)
-			}
-			content, err := extfile.File2Base64(zippedLog)
-			if err != nil {
-				return nil, err
-			}
-			artifacts = append(artifacts, action_kit_api.Artifact{
-				Label: "$(experimentKey)_$(executionId)_k6_log.zip",
-				Data:  content,
-			})
-		} else {
-			content, err := extfile.File2Base64(filename)
-			if err != nil {
-				return nil, err
-			}
-			artifacts = append(artifacts, action_kit_api.Artifact{
-				Label: "$(experimentKey)_$(executionId)_k6_log.txt",
-				Data:  content,
-			})
-		}
-	}
-
 	metricsFilename := fmt.Sprintf("/tmp/steadybit/%v/metrics.json", state.ExecutionId)
-	stats, err = os.Stat(metricsFilename)
-	if err == nil { // file exists
-		if stats.Size() > 1000000 {
-			//zip if more than 1mb
-			zippedMetrics := fmt.Sprintf("/tmp/steadybit/%v/metrics.zip", state.ExecutionId)
-			log.Info().Msgf("Zip metrics with command: %s %s %s", "zip", zippedMetrics, metricsFilename)
-			zipCommand := exec.Command("zip", zippedMetrics, metricsFilename)
-			zipErr := zipCommand.Run()
-			if zipErr != nil {
-				return nil, extension_kit.ToError("Failed to zip metrics", err)
-			}
-			content, err := extfile.File2Base64(zippedMetrics)
-			if err != nil {
-				return nil, err
-			}
-			artifacts = append(artifacts, action_kit_api.Artifact{
-				Label: "$(experimentKey)_$(executionId)_k6_metrics.zip",
-				Data:  content,
-			})
-		} else {
-			content, err := extfile.File2Base64(metricsFilename)
-			if err != nil {
-				return nil, err
-			}
-			artifacts = append(artifacts, action_kit_api.Artifact{
-				Label: "$(experimentKey)_$(executionId)_k6_metrics.json",
-				Data:  content,
-			})
-		}
+
+	artifacts := make([]action_kit_api.Artifact, 0)
+	if artifacts, err = appendFileArtifact(artifacts, filename, "$(experimentKey)_$(executionId)_k6_log.txt"); err != nil {
+		return nil, err
+	}
+	if artifacts, err = appendFileArtifact(artifacts, metricsFilename, "$(experimentKey)_$(executionId)_k6_metrics.json"); err != nil {
+		return nil, err
 	}
 
 	log.Debug().Msgf("Returning %d messages", len(messages))
@@ -352,4 +299,63 @@ func filter[T any](ss []T, test func(T) bool) (ret []T) {
 		}
 	}
 	return
+}
+
+// artifactZipThreshold is the size above which an artifact is zipped before being
+// base64 encoded into the response.
+const artifactZipThreshold = 1000000
+
+// appendFileArtifact appends the file at path as an artifact named label. Files
+// larger than artifactZipThreshold are zipped first, with ".zip" replacing the
+// extension in both the file name and the label. A missing file is skipped.
+func appendFileArtifact(artifacts []action_kit_api.Artifact, path, label string) ([]action_kit_api.Artifact, error) {
+	stats, err := os.Stat(path)
+	if err != nil {
+		return artifacts, nil
+	}
+
+	if stats.Size() > artifactZipThreshold {
+		zipped := replaceExtension(path, ".zip")
+		log.Info().Msgf("Zipping %s to %s", path, zipped)
+		if err := zipFile(path, zipped); err != nil {
+			return artifacts, extension_kit.ToError(fmt.Sprintf("Failed to zip %s", path), err)
+		}
+		path, label = zipped, replaceExtension(label, ".zip")
+	}
+
+	content, err := extfile.File2Base64(path)
+	if err != nil {
+		return artifacts, err
+	}
+	return append(artifacts, action_kit_api.Artifact{Label: label, Data: content}), nil
+}
+
+func replaceExtension(path, ext string) string {
+	return strings.TrimSuffix(path, filepath.Ext(path)) + ext
+}
+
+// zipFile writes src into a newly created zip archive at dst, stored under src's
+// base name.
+func zipFile(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = in.Close() }()
+
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = out.Close() }()
+
+	w := zip.NewWriter(out)
+	entry, err := w.Create(filepath.Base(src))
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(entry, in); err != nil {
+		return err
+	}
+	return w.Close()
 }

@@ -76,7 +76,7 @@ RUN /usr/local/bin/k6 --version > /k6-version.txt
 ARG USERNAME=steadybit
 ARG USER_UID=10000
 
-RUN apk update && apk upgrade --no-cache && apk add --no-cache zip && rm -rf /var/cache/apk/* && \
+RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/* && \
     adduser -u $USER_UID -D $USERNAME
 
 USER $USER_UID
