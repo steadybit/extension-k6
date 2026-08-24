@@ -21,7 +21,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH GOTOOLCHAIN=go1.26.6+auto goreleaser build
 ##
 ## K6 with extensions
 ##
-FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS k6-builder
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS k6-builder
 
 ARG TARGETOS
 ARG TARGETARCH
