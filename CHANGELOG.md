@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.3.3
+
+- chore(deps): bump github.com/steadybit/action-kit/go/action_kit_test
+- chore(deps): bump github.com/stretchr/testify from 1.12.0 to 1.12.1
+- chore(deps): bump golang from 1.26-alpine to 1.27-alpine
+- chore(deps): bump k8s.io/client-go from 0.36.3 to 0.36.4
+- chore: zip artifacts in-process, drop the zip package dependency (#200)
+- test(e2e): assert the run's output files come back as artifacts
+
 ## v1.3.2
 
 - chore(deps): bump github.com/stretchr/testify from 1.11.1 to 1.12.0
