@@ -3,7 +3,7 @@ module github.com/steadybit/extension-k6
 go 1.26.0
 
 require (
-	github.com/KimMachineGun/automemlimit v0.7.5
+	github.com/KimMachineGun/automemlimit v1.0.0
 	github.com/google/uuid v1.6.0
 	github.com/jarcoal/httpmock v1.4.2
 	github.com/kelseyhightower/envconfig v1.4.0
