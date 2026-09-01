@@ -25,18 +25,17 @@ FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS k6-builder
 
 ARG TARGETOS
 ARG TARGETARCH
-ARG K6_VERSION=v2.1.0
+ARG K6_VERSION=v2.2.0
 
 RUN apk add --no-cache git
-RUN go install go.k6.io/xk6/cmd/xk6@v1.4.1
+RUN go install go.k6.io/xk6/cmd/xk6@v1.4.12
 
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
-  --replace google.golang.org/grpc=google.golang.org/grpc@v1.82.1 \
   --with github.com/grafana/xk6-dns@latest \
   --with github.com/grafana/xk6-faker@latest \
   --with github.com/grafana/xk6-icmp@latest \
   --with github.com/grafana/xk6-mqtt@latest \
-  --with github.com/grafana/xk6-redis@v0.3.6 \
+  --with github.com/grafana/xk6-redis@latest \
   --with github.com/grafana/xk6-sql@latest \
   --with github.com/grafana/xk6-sql-driver-mysql@latest \
   --with github.com/grafana/xk6-sql-driver-postgres@latest \

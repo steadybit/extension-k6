@@ -2,3 +2,11 @@ vulnerabilities:
   - id: GHSA-mx64-mj3q-7prj
     statement: Waiting for upstream fix in github.com/hamba/avro/v2
     expired_at: 2027-01-01
+  - id: CVE-2026-56854
+    paths:
+      - usr/local/bin/k6
+    statement: |
+      golang.org/x/crypto v0.54.0 is pinned by k6 v2.2.0 (fixed in v0.55.0). The flaw is in the
+      x/crypto/ssh server implementation; the bundled k6 only acts as an SSH client via xk6-ssh.
+      Waiting for upstream k6 to bump the dependency.
+    expired_at: 2026-12-01
