@@ -17,3 +17,19 @@ vulnerabilities:
       google.golang.org/grpc v1.83.0 is pinned by k6 v2.2.0 and its xk6 extensions (fixed in
       v1.83.1). Waiting for upstream k6 to bump the dependency.
     expired_at: 2026-12-01
+  - id: CVE-2026-56855
+    paths:
+      - usr/local/bin/k6
+    statement: |
+      golang.org/x/crypto v0.54.0 is pinned by k6 v2.2.0 (fixed in v0.56.0). Unlike CVE-2026-56854
+      this is a channel-mux deadlock any malicious peer can trigger, so the client path is affected
+      too. Waiting for upstream k6 to bump the dependency.
+    expired_at: 2026-12-01
+  - id: CVE-2026-78662
+    paths:
+      - usr/local/bin/k6
+    statement: |
+      golang.org/x/crypto v0.54.0 is pinned by k6 v2.2.0 (fixed in v0.56.0). Incoming-request flood
+      on an unestablished channel deadlocks the connection; reachable from the client path as well.
+      Waiting for upstream k6 to bump the dependency.
+    expired_at: 2026-12-01
