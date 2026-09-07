@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.4
+
+- chore(deps): update bundled k6 to v2.2.0 and revisit xk6 pins
+
 ## v1.3.3
 
 - chore(deps): bump github.com/steadybit/action-kit/go/action_kit_test
