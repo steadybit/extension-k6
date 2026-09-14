@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.5
+
+- chore(deps): bump github.com/KimMachineGun/automemlimit from 0.7.5 to 1.0.0
+- chore(deps): bump goreleaser/goreleaser from v2.17.1 to v2.18.1
+- chore: remove fixed CVEs from ignore list
+
 ## v1.3.4
 
 - chore(deps): update bundled k6 to v2.2.0 and revisit xk6 pins
