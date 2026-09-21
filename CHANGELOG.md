@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.3.6
+
+- Add OpenTelemetry tracing support
+- Update dependencies
+
 ## v1.3.5
 
 - chore(deps): bump github.com/KimMachineGun/automemlimit from 0.7.5 to 1.0.0
