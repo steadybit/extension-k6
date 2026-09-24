@@ -25,10 +25,10 @@ FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS k6-builder
 
 ARG TARGETOS
 ARG TARGETARCH
-ARG K6_VERSION=v2.2.0
+ARG K6_VERSION=v2.3.0
 
 RUN apk add --no-cache git
-RUN go install go.k6.io/xk6/cmd/xk6@v1.4.12
+RUN go install go.k6.io/xk6/cmd/xk6@v1.4.14
 
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
   --with github.com/grafana/xk6-dns@latest \
