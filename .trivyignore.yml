@@ -1,0 +1,8 @@
+vulnerabilities:
+  - id: CVE-2026-84445
+    paths:
+      - usr/local/bin/k6
+    statement: |
+      google.golang.org/grpc v1.84.0 is pinned by k6 v2.3.0 and its xk6 extensions (fixed in
+      v1.83.2 and v1.85.0, no v1.84.x patch yet). Waiting for upstream k6 to bump the dependency.
+    expired_at: 2026-12-01
