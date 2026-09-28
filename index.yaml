@@ -11,6 +11,35 @@ entries:
         - name: Steadybit reliability hub
           url: https://hub.steadybit.com
     apiVersion: v2
+    appVersion: v1.3.7
+    created: "2026-09-28T06:51:21.42934522Z"
+    dependencies:
+    - name: extensionlib
+      repository: https://steadybit.github.io/helm-charts
+      version: ^1.6.0
+    description: Steadybit k6 extension Helm chart for Kubernetes.
+    digest: 4688088be892515320dd48a7aa10bbd6e8801ab5a444a9ba86a00da4bf5e7386
+    home: https://www.steadybit.com/
+    icon: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
+    maintainers:
+    - email: daniel.reuter@steadybit.com
+      name: reuda
+    name: steadybit-extension-k6
+    sources:
+    - https://github.com/steadybit/extension-k6
+    urls:
+    - https://github.com/steadybit/extension-k6/releases/download/steadybit-extension-k6-1.2.50/steadybit-extension-k6-1.2.50.tgz
+    version: 1.2.50
+  - annotations:
+      artifacthub.io/images: |
+        - name: logo
+          image: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
+      artifacthub.io/links: |-
+        - name: Steadybit website
+          url: https://www.steadybit.com
+        - name: Steadybit reliability hub
+          url: https://hub.steadybit.com
+    apiVersion: v2
     appVersion: v1.3.6
     created: "2026-09-21T08:31:46.714363181Z"
     dependencies:
@@ -2147,4 +2176,4 @@ entries:
     urls:
     - https://github.com/steadybit/extension-k6/releases/download/steadybit-extension-k6-1.0.0/steadybit-extension-k6-1.0.0.tgz
     version: 1.0.0
-generated: "2026-09-21T08:31:46.714699035Z"
+generated: "2026-09-28T06:51:21.429621898Z"
