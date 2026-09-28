@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.3.7
+
+- chore(deps): bump goreleaser/goreleaser from v2.18.1 to v2.18.2
+- chore(deps): update bundled k6 to v2.3.0 (#212)
+
 ## v1.3.6
 
 - Add OpenTelemetry tracing support
