@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.3.8
+
+- chore(deps): bump github.com/steadybit/action-kit/go/action_kit_test
+- chore(deps): bump k8s.io/client-go from 0.37.0 to 0.37.1
+
 ## v1.3.7
 
 - chore(deps): bump goreleaser/goreleaser from v2.18.1 to v2.18.2
