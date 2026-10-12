@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.3.9
+
+- chore(deps): bump golang.org/x/net to v0.61.0
+- chore(deps): force golang.org/x/net v0.61.0 in the bundled k6 binary
+- chore(deps): pin xk6-client-prometheus-remote to v0.5.3
+- chore(deps): update go toolchain to 1.27.2
+
 ## v1.3.8
 
 - chore(deps): bump github.com/steadybit/action-kit/go/action_kit_test
