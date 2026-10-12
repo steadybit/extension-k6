@@ -44,7 +44,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
   --with github.com/grafana/xk6-disruptor@latest \
   --with github.com/grafana/xk6-kubernetes@latest \
   --with github.com/grafana/xk6-loki@latest \
-  --with github.com/grafana/xk6-client-prometheus-remote@latest \
+  --with github.com/grafana/xk6-client-prometheus-remote@v0.5.3 \
   --with github.com/grafana/xk6-sql-driver-azuresql@latest \
   --with github.com/grafana/xk6-sql-driver-clickhouse@latest \
   --with github.com/grafana/xk6-sql-driver-sqlserver@latest \
