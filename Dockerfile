@@ -54,6 +54,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xk6 build --k6-version $K6_VERSION \
   --with github.com/mostafa/xk6-kafka@latest \
   --with github.com/tango-tango/xk6-msgpack@latest \
   --with github.com/phymbert/xk6-sse@latest \
+  --replace golang.org/x/net=golang.org/x/net@v0.61.0 \
   --output /k6
 ##
 ## Runtime
