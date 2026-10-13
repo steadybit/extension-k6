@@ -16,6 +16,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jarcoal/httpmock"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
+	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/extension-k6/config"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/stretchr/testify/assert"
@@ -237,6 +238,40 @@ func Test_localAction_Prepare(t *testing.T) {
 		"--env", "HOST=shop.example.com",
 		"--env", "VUS=10",
 	}, state.Command)
+}
+
+// A k6 archive is self-describing, so it is passed to k6 exactly like a single script.
+func Test_Prepare_archive(t *testing.T) {
+	tests := []struct {
+		name    string
+		action  action_kit_sdk.Action[K6LoadTestRunState]
+		command []string
+	}{
+		{"local", NewK6LoadTestRunAction(), []string{"k6", "run", "/tmp/archive.tar"}},
+		{"cloud", NewK6LoadTestCloudAction(), []string{"k6", "cloud", "run", "/tmp/archive.tar"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			state := tt.action.NewEmptyState()
+			_, err := tt.action.Prepare(context.Background(), &state, extutil.JsonMangle(action_kit_api.PrepareActionRequestBody{
+				ExecutionId: uuid.New(),
+				Config:      map[string]any{"file": "/tmp/archive.tar"},
+			}))
+			require.NoError(t, err)
+			assert.Equal(t, tt.command, state.Command[:len(tt.command)])
+		})
+	}
+}
+
+func Test_fileParameter_accepts_script_and_archive(t *testing.T) {
+	for _, description := range []action_kit_api.ActionDescription{
+		NewK6LoadTestRunAction().Describe(),
+		NewK6LoadTestCloudAction().Describe(),
+	} {
+		file := description.Parameters[0]
+		assert.Equal(t, "file", file.Name)
+		assert.Equal(t, []string{".js", ".tar"}, *file.AcceptedFileTypes, description.Id)
+	}
 }
 
 func Test_localAction_Lifecycle(t *testing.T) {

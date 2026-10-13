@@ -6,6 +6,7 @@ package e2e
 import (
 	"bytes"
 	"encoding/base64"
+	"os"
 	"testing"
 
 	"github.com/steadybit/action-kit/go/action_kit_test/client"
@@ -34,18 +35,36 @@ func TestWithMinikube(t *testing.T) {
 			Name: "run k6",
 			Test: testRunK6,
 		},
+		{
+			Name: "run k6 archive",
+			Test: testRunK6Archive,
+		},
 	})
 }
 
 func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
+	runK6(t, m, e, client.File{
+		ParameterName: "file",
+		FileName:      "script.js",
+		Content:       []byte("import http from 'k6/http';\nexport default function() { http.get('https://www.steadybit.com'); }"),
+	})
+}
+
+// testRunK6Archive runs a script that imports another local file, uploaded as the archive
+// `k6 archive` produced from testdata/archive (see testdata/README.md to regenerate it).
+func testRunK6Archive(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
+	content, err := os.ReadFile("testdata/archive.tar")
+	require.NoError(t, err)
+	runK6(t, m, e, client.File{
+		ParameterName: "file",
+		FileName:      "archive.tar",
+		Content:       content,
+	})
+}
+
+func runK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension, file client.File) {
 	config := struct{}{}
-	files := []client.File{
-		{
-			ParameterName: "file",
-			FileName:      "script.js",
-			Content:       []byte("import http from 'k6/http';\nexport default function() { http.get('https://www.steadybit.com'); }"),
-		},
-	}
+	files := []client.File{file}
 	exec, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, config, nil, files)
 	require.NoError(t, err)
 	e2e.AssertProcessRunningInContainer(t, m, e.Pod, "extension", "k6", true)

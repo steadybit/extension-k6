@@ -43,6 +43,23 @@ The Docker image ships a custom k6 binary built with [xk6](https://github.com/gr
 | [xk6-client-tracing](https://github.com/grafana/xk6-client-tracing)                        | Distributed tracing client     |
 | [xk6-subcommand-httpbin](https://github.com/grafana/xk6-subcommand-httpbin)                | Built-in httpbin test server   |
 
+## Scripts with Multiple Files
+
+The K6 actions accept either a single script (`.js`) or a [k6 archive](https://grafana.com/docs/k6/latest/misc/archive/)
+(`.tar`). If your script imports other local modules (e.g. `import { login } from '../lib/auth.js'`) or reads files with
+`open()`, bundle everything into an archive and upload that instead of the script:
+
+```sh
+k6 archive tests/main.js -O archive.tar
+```
+
+The archive contains the entry script, every local file it references, and the script's options, so k6 runs it without
+further configuration. Environment variables configured in the step are still passed to k6 and take precedence over
+values stored in the archive.
+
+Keep in mind that the archive also stores the environment variables passed to `k6 archive` via `-e`/`--env` in plain
+text, so pass secrets as environment variables in the step instead.
+
 ## Configuration
 
 | Environment Variable                            | Helm value                | Meaning                                                                                                                                                                                              | Required | Default |
