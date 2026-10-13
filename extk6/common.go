@@ -55,12 +55,13 @@ func getActionDescription(actionId string, label string, description string, hin
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:        "file",
-				Label:       "K6 Script",
-				Description: new("Upload your K6 Script"),
+				Label:       "K6 Script or Archive",
+				Description: new("Upload a single K6 script (.js). If your script imports other local files, bundle them with `k6 archive script.js` and upload the resulting archive (.tar)."),
 				Type:        action_kit_api.ActionParameterTypeFile,
 				Required:    new(true),
 				AcceptedFileTypes: new([]string{
 					".js",
+					".tar",
 				}),
 				Order: new(1),
 			},
