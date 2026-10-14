@@ -48,13 +48,14 @@ func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 		FileName:      "script.js",
 		Content: []byte("import http from 'k6/http';\n" +
 			"import { sleep } from 'k6';\n" +
-			"export const options = { vus: 1, duration: '15s' };\n" +
+			"export const options = { vus: 1, duration: '3s' };\n" +
 			"export default function() { http.get('https://www.steadybit.com'); sleep(1); }"),
 	})
 }
 
 // testRunK6Archive runs a script that imports another local file, uploaded as the archive
 // `k6 archive` produced from testdata/archive (see testdata/README.md to regenerate it).
+// The archived script runs for 3s like the inline one, for the reason explained on runK6.
 func testRunK6Archive(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	content, err := os.ReadFile("testdata/archive.tar")
 	require.NoError(t, err)
@@ -65,9 +66,18 @@ func testRunK6Archive(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	})
 }
 
-// runK6 runs the action with the given file. The scripts run for 15s, well past the 5s in which
-// AssertProcessRunningInContainer looks for the k6 process: a script that finishes in a fraction of
-// a second is often gone before the first `ps` in the pod sees it.
+// runK6 runs the action with the given file and checks that k6 ran.
+//
+// The test scripts run for a fixed 3s (`vus: 1, duration: '3s'`, one request per second) so that
+// AssertProcessRunningInContainer reliably finds the k6 process:
+//   - RunActionWithFiles returns as soon as the action has started, so k6 is already running when
+//     the assertion begins. The assertion then runs `ps` in the pod every 200ms (for up to 5s), and
+//     each of those is a `kubectl exec` that itself takes a few hundred milliseconds.
+//   - Without a duration, k6 runs a single iteration and exits after about 0.2s. It is then often
+//     gone before the first `ps` lands, so whether the assertion passes depends on timing. That made
+//     the test flaky, mostly for the archive case, which runs second on an already warm cluster.
+//   - 3s keeps k6 running through the first polls with room for a slow `kubectl exec` on a busy CI
+//     runner, while adding only a few seconds per test case.
 func runK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension, file client.File) {
 	config := struct{}{}
 	files := []client.File{file}
