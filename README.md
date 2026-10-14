@@ -60,6 +60,10 @@ values stored in the archive.
 Keep in mind that the archive also stores the environment variables passed to `k6 archive` via `-e`/`--env` in plain
 text, so pass secrets as environment variables in the step instead.
 
+By default, the platform limits uploads to 5 MB per file. Scripts rarely come close, but data opened with `open()` (e.g. large
+CSV or JSON datasets) is bundled into the archive too. If your archive gets too large, fetch such data at runtime
+instead of bundling it.
+
 ## Configuration
 
 | Environment Variable                            | Helm value                | Meaning                                                                                                                                                                                              | Required | Default |
