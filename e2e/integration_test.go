@@ -49,7 +49,7 @@ func TestWithMinikube(t *testing.T) {
 }
 
 func testRunK6(t *testing.T, _ *e2e.Minikube, e *e2e.Extension) {
-	runK6(t, e, client.File{
+	runK6AndWait(t, e, client.File{
 		ParameterName: "file",
 		FileName:      "script.js",
 		Content:       []byte("import http from 'k6/http';\nexport default function() { http.get('https://www.steadybit.com'); }"),
@@ -61,7 +61,7 @@ func testRunK6(t *testing.T, _ *e2e.Minikube, e *e2e.Extension) {
 func testRunK6Archive(t *testing.T, _ *e2e.Minikube, e *e2e.Extension) {
 	content, err := os.ReadFile("testdata/archive.tar")
 	require.NoError(t, err)
-	metrics := runK6(t, e, client.File{
+	metrics := runK6AndWait(t, e, client.File{
 		ParameterName: "file",
 		FileName:      "archive.tar",
 		Content:       content,
@@ -83,7 +83,7 @@ func testCancelK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 		FileName:      "script.js",
 		Content: []byte("import http from 'k6/http';\n" +
 			"import { sleep } from 'k6';\n" +
-			"export const options = { vus: 1, duration: '10m' };\n" +
+			"export const options = { vus: 1, duration: '30s' };\n" +
 			"export default function() { http.get('https://www.steadybit.com'); sleep(1); }"),
 	}}
 	exec, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, config, nil, files)
@@ -95,10 +95,10 @@ func testCancelK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	assert.Contains(t, artifactsByLabel(t, exec), k6LogArtifact, "stopping must still return k6's log")
 }
 
-// runK6 runs the action with the given file to completion and checks what it returned: a clean
+// runK6AndWait runs the action with the given file to completion and checks what it returned: a clean
 // completion, k6's log and the metrics k6 recorded. All of these exist once the action has ended,
 // so nothing here depends on how long k6 runs. Returns the recorded metrics, summed per name.
-func runK6(t *testing.T, e *e2e.Extension, file client.File) map[string]float64 {
+func runK6AndWait(t *testing.T, e *e2e.Extension, file client.File) map[string]float64 {
 	config := struct{}{}
 	files := []client.File{file}
 	exec, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, config, nil, files)
