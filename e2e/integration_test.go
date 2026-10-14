@@ -43,11 +43,12 @@ func TestWithMinikube(t *testing.T) {
 }
 
 func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
-	runK6(t, m, e, client.File{
+	runK6(t, e, client.File{
 		ParameterName: "file",
 		FileName:      "script.js",
-		Content:       []byte("import http from 'k6/http';\nexport default function() { http.get('https://www.steadybit.com'); }"),
-	})
+		Content: []byte("import http from 'k6/http';\n" +
+			"export default function() { console.log('k6 e2e: single script ok'); http.get('https://www.steadybit.com'); }"),
+	}, "k6 e2e: single script ok")
 }
 
 // testRunK6Archive runs a script that imports another local file, uploaded as the archive
@@ -55,30 +56,26 @@ func testRunK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 func testRunK6Archive(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	content, err := os.ReadFile("testdata/archive.tar")
 	require.NoError(t, err)
-	runK6(t, m, e, client.File{
+	runK6(t, e, client.File{
 		ParameterName: "file",
 		FileName:      "archive.tar",
 		Content:       content,
-	})
+	}, "k6 e2e: archive ok, imported ../lib/requests.js")
 }
 
-func runK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension, file client.File) {
+// runK6 runs the action with the given file and asserts on what k6 produced. It deliberately
+// doesn't check for a running k6 process: these scripts finish in well under a second, often
+// before a `ps` in the pod gets to see them, and the pod log already holds output of earlier
+// test cases. The run's own log artifact is complete once the action has ended.
+func runK6(t *testing.T, e *e2e.Extension, file client.File, expectedOutput string) {
 	config := struct{}{}
 	files := []client.File{file}
 	exec, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, config, nil, files)
 	require.NoError(t, err)
-	e2e.AssertProcessRunningInContainer(t, m, e.Pod, "extension", "k6", true)
-	///        \      Grafana   /‾‾/                                                                                                                                                                                                                                                                                                                                                                                                                  │
-	//   /\  /  \     |\  __   /  /                                                                                                                                                                                                                                                                                                                                                                                                              │
-	//  /  \/    \    | |/ /  /   ‾‾\                                                                                                                                                                                                                                                                                                                                                                                                           │
-	// /          \   |   (  |  (‾)  |                                                                                                                                                                                                                                                                                                                                                                                                         │
-	/// __________ \  |_|\_\  \_____/
-	e2e.AssertLogContains(t, m, e.Pod, "/ __________ \\  |_|\\_\\  \\_____/")
 
 	err = exec.Wait()
 	require.NoError(t, err)
 
-	// The banner asserted above only shows that k6 started, not that its output came back.
 	artifacts := make(map[string][]byte)
 	for _, artifact := range exec.Artifacts() {
 		data, err := base64.StdEncoding.DecodeString(artifact.Data)
@@ -88,7 +85,13 @@ func runK6(t *testing.T, m *e2e.Minikube, e *e2e.Extension, file client.File) {
 
 	require.Contains(t, artifacts, k6LogArtifact)
 	require.Contains(t, artifacts, k6MetricsArtifact)
-	assert.NotEmpty(t, artifacts[k6LogArtifact], "the log artifact must carry k6's output")
+	///        \      Grafana   /‾‾/
+	//   /\  /  \     |\  __   /  /
+	//  /  \/    \    | |/ /  /   ‾‾\
+	// /          \   |   (  |  (‾)  |
+	/// __________ \  |_|\_\  \_____/
+	assert.Contains(t, string(artifacts[k6LogArtifact]), "/ __________ \\  |_|\\_\\  \\_____/", "the log artifact must carry k6's banner")
+	assert.Contains(t, string(artifacts[k6LogArtifact]), expectedOutput, "the log artifact must carry the script's own output")
 	// k6 was pointed at this file with --out json=, so it holds newline-delimited JSON objects.
 	assert.True(t, bytes.HasPrefix(artifacts[k6MetricsArtifact], []byte("{")),
 		"the metrics artifact must be the json stream k6 was told to write")
