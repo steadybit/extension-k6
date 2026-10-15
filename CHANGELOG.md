@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Support k6 archives (`.tar`, created with `k6 archive`) in the K6 step in addition to single `.js` scripts, so load tests that import other local files or read data files with `open()` can be uploaded.
+- k6 archives fix their options, such as duration and VUs, when the archive is created: custom environment variables used in `options` (e.g. `` duration: `${__ENV.TIME}s` ``) have no effect at run time. To change them for an uploaded archive, set `K6_DURATION` (e.g. `60s`) or `K6_VUS` as environment variables on the K6 step.
+
 ## v1.3.9
 
 - chore(deps): bump golang.org/x/net to v0.61.0
