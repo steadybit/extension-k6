@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- feat: support k6 archives (.tar) (set `K6_DURATION` / `K6_VUS` on the step to change their duration or VUs)
+
 ## v1.3.9
 
 - chore(deps): bump golang.org/x/net to v0.61.0
