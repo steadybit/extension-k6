@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- k6 archives: set `K6_DURATION` / `K6_VUS` on the step to change their duration or VUs
+- feat: support k6 archives (.tar) (set `K6_DURATION` / `K6_VUS` on the step to change their duration or VUs)
 
 ## v1.3.9
 
