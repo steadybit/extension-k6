@@ -51,7 +51,7 @@ Both K6 actions have two optional parameters to override the script's options wi
   `iterations`, and the experiment editor uses it to show how long the step runs.
 - **Virtual users** – passed to k6 as `K6_VUS`.
 
-Leave them empty (or `0` for the virtual users) to use the script's own options. They work the same for scripts and
+Leave them empty to use the script's own options. They work the same for scripts and
 archives, and take precedence over `K6_DURATION` / `K6_VUS` set in the step's environment variables.
 
 ## Scripts with Multiple Files

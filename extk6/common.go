@@ -81,9 +81,9 @@ func getActionDescription(actionId string, label string, description string, hin
 			{
 				Name:        k6VusParameter,
 				Label:       "Virtual users",
-				Description: new("Number of virtual users (passed as `K6_VUS`). Leave at 0 to use the script's options."),
+				Description: new("Number of virtual users (passed as `K6_VUS`). Leave empty to use the script's options."),
 				Type:        action_kit_api.ActionParameterTypeInteger,
-				MinValue:    new(0),
+				MinValue:    new(1),
 				Required:    new(false),
 				Order:       new(3),
 			},

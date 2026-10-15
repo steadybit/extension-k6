@@ -282,6 +282,7 @@ func Test_Prepare_duration_and_vus(t *testing.T) {
 		want   []string
 	}{
 		{"not set", map[string]any{}, nil},
+		{"null", map[string]any{"duration": nil, "K6_VUS": nil}, nil},
 		{"zero is not set", map[string]any{"duration": 0, "K6_VUS": 0}, nil},
 		{"duration", map[string]any{"duration": 30000}, []string{"--env", "K6_DURATION=30s"}},
 		{"duration in minutes", map[string]any{"duration": 5 * 60 * 1000}, []string{"--env", "K6_DURATION=300s"}},
@@ -335,6 +336,7 @@ func Test_durationAndVusParameters(t *testing.T) {
 		assert.Equal(t, "K6_VUS", vus.Name)
 		assert.Equal(t, action_kit_api.ActionParameterTypeInteger, vus.Type)
 		assert.False(t, *vus.Required)
+		assert.Equal(t, 1, *vus.MinValue)
 	}
 }
 
