@@ -44,7 +44,7 @@ func (l *K6LoadTestRunAction) Describe() action_kit_api.ActionDescription {
 			Name:  "-",
 			Label: "Filter K6 Locations",
 			Type:  action_kit_api.ActionParameterTypeTargetSelection,
-			Order: new(3),
+			Order: new(5),
 		})
 		description.TargetSelection = new(action_kit_api.TargetSelection{
 			TargetType: targetType,

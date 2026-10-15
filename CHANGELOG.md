@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- feat: support k6 archives (.tar) (set `K6_DURATION` / `K6_VUS` on the step to change their duration or VUs)
+- feat: support k6 archives (.tar)
+- feat: optional Duration and Virtual users parameters, passed to k6 as `K6_DURATION` / `K6_VUS`; the experiment editor shows the step with its duration
 
 ## v1.3.9
 
