@@ -75,16 +75,11 @@ func Test_Prepare_scenarios_inspect_arguments(t *testing.T) {
 		"duration":    30000,
 		"environment": []map[string]string{{"key": "PROFILE", "value": "smoke"}},
 	}
-
-	calls := stubInspect(t, `{"scenarios": null}`, nil)
-	prepareWith(t, NewK6LoadTestRunAction(), config)
-	assert.Equal(t, [][]string{{"--env", "PROFILE=smoke", "--include-system-env-vars", "/tmp/script.js"}}, *calls,
-		"like `k6 run`, the local action passes the system environment variables")
-
-	calls = stubInspect(t, `{"scenarios": null}`, nil)
-	prepareWith(t, NewK6LoadTestCloudAction(), config)
-	assert.Equal(t, [][]string{{"--env", "PROFILE=smoke", "/tmp/script.js"}}, *calls,
-		"like `k6 cloud run`, the cloud action does not")
+	for _, action := range []action_kit_sdk.Action[K6LoadTestRunState]{NewK6LoadTestRunAction(), NewK6LoadTestCloudAction()} {
+		calls := stubInspect(t, `{"scenarios": null}`, nil)
+		prepareWith(t, action, config)
+		assert.Equal(t, [][]string{{"--env", "PROFILE=smoke", "/tmp/script.js"}}, *calls, action.Describe().Id)
+	}
 }
 
 func Test_Prepare_scenarios_check_skipped_when_inspect_fails(t *testing.T) {
@@ -123,13 +118,13 @@ func Test_scriptDefinesScenarios_with_k6(t *testing.T) {
 	scenarios := write("scenarios.js", "export const options = { scenarios: { a: { executor: 'constant-vus', vus: 1, duration: '3s' } } };\nexport default function () {}\n")
 	byEnv := write("by-env.js", "export const options = __ENV.WITH_SCENARIOS ? { scenarios: { a: { executor: 'constant-vus', vus: 1, duration: '3s' } } } : {};\nexport default function () {}\n")
 
-	assert.False(t, scriptDefinesScenarios(plain, nil, true))
-	assert.True(t, scriptDefinesScenarios(scenarios, nil, true))
-	assert.False(t, scriptDefinesScenarios(byEnv, nil, false))
-	assert.True(t, scriptDefinesScenarios(byEnv, []string{"--env", "WITH_SCENARIOS=1"}, false))
-	assert.False(t, scriptDefinesScenarios(filepath.Join(dir, "missing.js"), nil, true))
+	assert.False(t, scriptDefinesScenarios(plain, nil))
+	assert.True(t, scriptDefinesScenarios(scenarios, nil))
+	assert.False(t, scriptDefinesScenarios(byEnv, nil))
+	assert.True(t, scriptDefinesScenarios(byEnv, []string{"--env", "WITH_SCENARIOS=1"}))
+	assert.False(t, scriptDefinesScenarios(filepath.Join(dir, "missing.js"), nil))
 
 	archive := filepath.Join(dir, "scenarios.tar")
 	require.NoError(t, exec.Command("k6", "archive", scenarios, "-O", archive).Run())
-	assert.True(t, scriptDefinesScenarios(archive, nil, true), "the options stored in an archive are inspected too")
+	assert.True(t, scriptDefinesScenarios(archive, nil), "the options stored in an archive are inspected too")
 }

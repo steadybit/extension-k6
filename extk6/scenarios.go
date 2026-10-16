@@ -25,14 +25,10 @@ var inspectK6 = func(ctx context.Context, args []string) ([]byte, error) {
 }
 
 // scriptDefinesScenarios reports whether the script (or archive) at file defines k6 scenarios, evaluating its options
-// with the same environment variables the run gets. If k6 can't inspect it, it returns false: the run itself then
-// reports the actual problem (e.g. a syntax error).
-func scriptDefinesScenarios(file string, envArgs []string, includeSystemEnvVars bool) bool {
-	args := append([]string{}, envArgs...)
-	if includeSystemEnvVars {
-		args = append(args, "--include-system-env-vars")
-	}
-	args = append(args, file)
+// with the step's environment variables. If k6 can't inspect it, it returns false: the run itself then reports the
+// actual problem (e.g. a syntax error).
+func scriptDefinesScenarios(file string, envArgs []string) bool {
+	args := append(append([]string{}, envArgs...), file)
 
 	ctx, cancel := context.WithTimeout(context.Background(), inspectTimeout)
 	defer cancel()

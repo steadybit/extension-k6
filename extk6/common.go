@@ -103,9 +103,7 @@ func getActionDescription(actionId string, label string, description string, hin
 	}
 }
 
-// prepare builds the k6 command. includeSystemEnvVars mirrors whether the k6 subcommand passes the extension's own
-// environment variables to the script (`k6 run` does by default, `k6 cloud run` does not).
-func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody, command []string, includeSystemEnvVars bool) (*action_kit_api.PrepareResult, error) {
+func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody, command []string) (*action_kit_api.PrepareResult, error) {
 	var config K6LoadTestRunConfig
 	if err := extconversion.Convert(request.Config, &config); err != nil {
 		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
@@ -132,7 +130,7 @@ func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequ
 
 	// Duration replaces all scenarios of the script with a single default one, and VUs alone is ignored by them:
 	// neither is what the user asked for, so refuse to run instead.
-	if len(overrides) > 0 && scriptDefinesScenarios(config.File, envArgs, includeSystemEnvVars) {
+	if len(overrides) > 0 && scriptDefinesScenarios(config.File, envArgs) {
 		return &action_kit_api.PrepareResult{
 			Error: &action_kit_api.ActionKitError{
 				Title:  scenariosConflictTitle,

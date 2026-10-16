@@ -72,7 +72,7 @@ func (l *K6LoadTestRunAction) Prepare(_ context.Context, state *K6LoadTestRunSta
 		"--out",
 		fmt.Sprintf("json=%s", filename),
 	}
-	return prepare(state, request, command, true)
+	return prepare(state, request, command)
 }
 
 func (l *K6LoadTestRunAction) Start(_ context.Context, state *K6LoadTestRunState) (*action_kit_api.StartResult, error) {

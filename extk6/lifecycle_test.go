@@ -212,7 +212,7 @@ func Test_prepare_invalid_config(t *testing.T) {
 	state := &K6LoadTestRunState{}
 	_, err := prepare(state, action_kit_api.PrepareActionRequestBody{
 		Config: map[string]any{"environment": "not a list"},
-	}, []string{"k6"}, false)
+	}, []string{"k6"})
 	assert.ErrorContains(t, err, "Failed to unmarshal the config.")
 }
 
