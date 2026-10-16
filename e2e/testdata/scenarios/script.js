@@ -13,7 +13,7 @@ export const options = {
   },
 };
 
-export default function () {
+export default function smoke() {
   http.get('https://www.steadybit.com');
   sleep(1);
 }
