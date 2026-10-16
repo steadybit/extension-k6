@@ -7,6 +7,7 @@ package extk6
 import (
 	"context"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -299,27 +300,24 @@ func Test_Prepare_duration_and_vus(t *testing.T) {
 	for _, tt := range tests {
 		for _, action := range []action_kit_sdk.Action[K6LoadTestRunState]{NewK6LoadTestRunAction(), NewK6LoadTestCloudAction()} {
 			t.Run(fmt.Sprintf("%s/%s", action.Describe().Id, tt.name), func(t *testing.T) {
-				state := action.NewEmptyState()
 				config := map[string]any{"file": "/tmp/script.js"}
-				for k, v := range tt.config {
-					config[k] = v
-				}
-				_, err := action.Prepare(context.Background(), &state, extutil.JsonMangle(action_kit_api.PrepareActionRequestBody{
-					ExecutionId: uuid.New(),
-					Config:      config,
-				}))
-				require.NoError(t, err)
-
-				var envArgs []string
-				for i, arg := range state.Command {
-					if arg == "--env" {
-						envArgs = append(envArgs, state.Command[i:i+2]...)
-					}
-				}
-				assert.Equal(t, tt.want, envArgs)
+				maps.Copy(config, tt.config)
+				state, _ := prepareWith(t, action, config)
+				assert.Equal(t, tt.want, envArgsOf(state.Command))
 			})
 		}
 	}
+}
+
+// envArgsOf returns the "--env KEY=VALUE" pairs of a k6 command.
+func envArgsOf(command []string) []string {
+	var envArgs []string
+	for i, arg := range command {
+		if arg == "--env" && i+1 < len(command) {
+			envArgs = append(envArgs, command[i:i+2]...)
+		}
+	}
+	return envArgs
 }
 
 func Test_durationAndVusParameters(t *testing.T) {
