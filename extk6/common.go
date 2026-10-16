@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/google/uuid"
@@ -111,22 +112,8 @@ func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequ
 
 	state.ExecutionId = request.ExecutionId
 
-	var envArgs []string
-	if config.Environment != nil {
-		for _, value := range config.Environment {
-			envArgs = append(envArgs, "--env", fmt.Sprintf("%s=%s", value["key"], value["value"]))
-		}
-	}
-
-	// k6 reads its K6_* options from --env as well, overriding the script's options (also those of an archive).
-	// Appended last, so they win over the same keys set in the environment parameter.
-	var overrides []string
-	if durationMs := extutil.ToInt64(request.Config["duration"]); durationMs > 0 {
-		overrides = append(overrides, "--env", fmt.Sprintf("K6_DURATION=%s", formatK6Duration(durationMs)))
-	}
-	if vus := extutil.ToInt64(request.Config[k6VusParameter]); vus > 0 {
-		overrides = append(overrides, "--env", fmt.Sprintf("%s=%d", k6VusParameter, vus))
-	}
+	envArgs := environmentArgs(config.Environment)
+	overrides := optionOverrides(request.Config)
 
 	// Duration replaces all scenarios of the script with a single default one, and VUs alone is ignored by them:
 	// neither is what the user asked for, so refuse to run instead.
@@ -139,8 +126,31 @@ func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequ
 		}, nil
 	}
 
-	state.Command = append(append(command, envArgs...), overrides...)
+	// The overrides go last, so they win over the same keys set in the environment parameter.
+	state.Command = slices.Concat(command, envArgs, overrides)
 	return nil, nil
+}
+
+// environmentArgs turns the environment parameter into k6 "--env KEY=VALUE" arguments.
+func environmentArgs(environment []map[string]string) []string {
+	var args []string
+	for _, value := range environment {
+		args = append(args, "--env", fmt.Sprintf("%s=%s", value["key"], value["value"]))
+	}
+	return args
+}
+
+// optionOverrides turns the Duration and Virtual users parameters into the k6 options K6_DURATION / K6_VUS. k6 reads
+// them from --env as well, overriding the script's options (also those of an archive). Unset or 0 values are left out.
+func optionOverrides(config map[string]any) []string {
+	var args []string
+	if durationMs := extutil.ToInt64(config["duration"]); durationMs > 0 {
+		args = append(args, "--env", fmt.Sprintf("K6_DURATION=%s", formatK6Duration(durationMs)))
+	}
+	if vus := extutil.ToInt64(config[k6VusParameter]); vus > 0 {
+		args = append(args, "--env", fmt.Sprintf("%s=%d", k6VusParameter, vus))
+	}
+	return args
 }
 
 // formatK6Duration converts an ActionKit duration (milliseconds) into a k6 duration, e.g. 30000 -> "30s".

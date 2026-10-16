@@ -7,7 +7,6 @@ package extk6
 import (
 	"context"
 	"fmt"
-	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -275,8 +274,7 @@ func Test_fileParameter_accepts_script_and_archive(t *testing.T) {
 	}
 }
 
-// Duration and VUs are passed as the k6 options K6_DURATION / K6_VUS, which override the script's (or archive's) options.
-func Test_Prepare_duration_and_vus(t *testing.T) {
+func Test_optionOverrides(t *testing.T) {
 	tests := []struct {
 		name   string
 		config map[string]any
@@ -290,22 +288,25 @@ func Test_Prepare_duration_and_vus(t *testing.T) {
 		{"duration with millis", map[string]any{"duration": 1500}, []string{"--env", "K6_DURATION=1500ms"}},
 		{"vus", map[string]any{"K6_VUS": 10}, []string{"--env", "K6_VUS=10"}},
 		{"both", map[string]any{"duration": 30000, "K6_VUS": 10}, []string{"--env", "K6_DURATION=30s", "--env", "K6_VUS=10"}},
-		{"win over environment", map[string]any{
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, optionOverrides(extutil.JsonMangle(tt.config)))
+		})
+	}
+}
+
+// Duration and VUs are passed as the k6 options K6_DURATION / K6_VUS after the environment parameter, so they win.
+func Test_Prepare_duration_and_vus(t *testing.T) {
+	stubInspect(t, `{"scenarios": null}`, nil)
+	for _, action := range []action_kit_sdk.Action[K6LoadTestRunState]{NewK6LoadTestRunAction(), NewK6LoadTestCloudAction()} {
+		state, _ := prepareWith(t, action, map[string]any{
+			"file":        "/tmp/script.js",
 			"duration":    30000,
 			"K6_VUS":      10,
 			"environment": []map[string]string{{"key": "K6_DURATION", "value": "1h"}},
-		}, []string{"--env", "K6_DURATION=1h", "--env", "K6_DURATION=30s", "--env", "K6_VUS=10"}},
-	}
-	stubInspect(t, `{"scenarios": null}`, nil)
-	for _, tt := range tests {
-		for _, action := range []action_kit_sdk.Action[K6LoadTestRunState]{NewK6LoadTestRunAction(), NewK6LoadTestCloudAction()} {
-			t.Run(fmt.Sprintf("%s/%s", action.Describe().Id, tt.name), func(t *testing.T) {
-				config := map[string]any{"file": "/tmp/script.js"}
-				maps.Copy(config, tt.config)
-				state, _ := prepareWith(t, action, config)
-				assert.Equal(t, tt.want, envArgsOf(state.Command))
-			})
-		}
+		})
+		assert.Equal(t, []string{"--env", "K6_DURATION=1h", "--env", "K6_DURATION=30s", "--env", "K6_VUS=10"}, envArgsOf(state.Command), action.Describe().Id)
 	}
 }
 
