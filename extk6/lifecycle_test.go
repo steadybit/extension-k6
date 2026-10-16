@@ -211,7 +211,7 @@ func Test_prepare_invalid_config(t *testing.T) {
 	state := &K6LoadTestRunState{}
 	_, err := prepare(state, action_kit_api.PrepareActionRequestBody{
 		Config: map[string]any{"environment": "not a list"},
-	}, []string{"k6"})
+	}, []string{"k6"}, false)
 	assert.ErrorContains(t, err, "Failed to unmarshal the config.")
 }
 
@@ -295,6 +295,7 @@ func Test_Prepare_duration_and_vus(t *testing.T) {
 			"environment": []map[string]string{{"key": "K6_DURATION", "value": "1h"}},
 		}, []string{"--env", "K6_DURATION=1h", "--env", "K6_DURATION=30s", "--env", "K6_VUS=10"}},
 	}
+	stubInspect(t, `{"scenarios": null}`, nil)
 	for _, tt := range tests {
 		for _, action := range []action_kit_sdk.Action[K6LoadTestRunState]{NewK6LoadTestRunAction(), NewK6LoadTestCloudAction()} {
 			t.Run(fmt.Sprintf("%s/%s", action.Describe().Id, tt.name), func(t *testing.T) {

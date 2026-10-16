@@ -71,7 +71,7 @@ func getActionDescription(actionId string, label string, description string, hin
 			{
 				Name:          "duration",
 				Label:         "Duration",
-				Description:   new("How long the load test runs. Overrides the duration and stages of the script (passed as `K6_DURATION`). Leave empty to use the script's options."),
+				Description:   new("How long the load test runs. Overrides the duration and stages of the script (passed as `K6_DURATION`). Leave empty to use the script's options. Can't be combined with k6 scenarios."),
 				Type:          action_kit_api.ActionParameterTypeDuration,
 				DurationUnits: new([]action_kit_api.DurationUnit{action_kit_api.DurationUnitSeconds, action_kit_api.DurationUnitMinutes, action_kit_api.DurationUnitHours}),
 				MinValue:      new(0),
@@ -81,7 +81,7 @@ func getActionDescription(actionId string, label string, description string, hin
 			{
 				Name:        k6VusParameter,
 				Label:       "Virtual users",
-				Description: new("Number of virtual users (passed as `K6_VUS`). Leave empty to use the script's options."),
+				Description: new("Number of virtual users (passed as `K6_VUS`). Leave empty to use the script's options. Can't be combined with k6 scenarios."),
 				Type:        action_kit_api.ActionParameterTypeInteger,
 				MinValue:    new(1),
 				Required:    new(false),
@@ -103,31 +103,45 @@ func getActionDescription(actionId string, label string, description string, hin
 	}
 }
 
-func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody, command []string) (*action_kit_api.PrepareResult, error) {
+// prepare builds the k6 command. includeSystemEnvVars mirrors whether the k6 subcommand passes the extension's own
+// environment variables to the script (`k6 run` does by default, `k6 cloud run` does not).
+func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequestBody, command []string, includeSystemEnvVars bool) (*action_kit_api.PrepareResult, error) {
 	var config K6LoadTestRunConfig
 	if err := extconversion.Convert(request.Config, &config); err != nil {
 		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
 	}
 
 	state.ExecutionId = request.ExecutionId
-	state.Command = command
 
+	var envArgs []string
 	if config.Environment != nil {
 		for _, value := range config.Environment {
-			state.Command = append(state.Command, "--env")
-			state.Command = append(state.Command, fmt.Sprintf("%s=%s", value["key"], value["value"]))
+			envArgs = append(envArgs, "--env", fmt.Sprintf("%s=%s", value["key"], value["value"]))
 		}
 	}
 
 	// k6 reads its K6_* options from --env as well, overriding the script's options (also those of an archive).
 	// Appended last, so they win over the same keys set in the environment parameter.
+	var overrides []string
 	if durationMs := extutil.ToInt64(request.Config["duration"]); durationMs > 0 {
-		state.Command = append(state.Command, "--env", fmt.Sprintf("K6_DURATION=%s", formatK6Duration(durationMs)))
+		overrides = append(overrides, "--env", fmt.Sprintf("K6_DURATION=%s", formatK6Duration(durationMs)))
 	}
 	if vus := extutil.ToInt64(request.Config[k6VusParameter]); vus > 0 {
-		state.Command = append(state.Command, "--env", fmt.Sprintf("%s=%d", k6VusParameter, vus))
+		overrides = append(overrides, "--env", fmt.Sprintf("%s=%d", k6VusParameter, vus))
 	}
 
+	// Duration replaces all scenarios of the script with a single default one, and VUs alone is ignored by them:
+	// neither is what the user asked for, so refuse to run instead.
+	if len(overrides) > 0 && scriptDefinesScenarios(config.File, envArgs, includeSystemEnvVars) {
+		return &action_kit_api.PrepareResult{
+			Error: &action_kit_api.ActionKitError{
+				Title:  scenariosConflictTitle,
+				Status: extutil.Ptr(action_kit_api.Errored),
+			},
+		}, nil
+	}
+
+	state.Command = append(append(command, envArgs...), overrides...)
 	return nil, nil
 }
 

@@ -54,6 +54,11 @@ Both K6 actions have two optional parameters to override the script's options wi
 Leave them empty to use the script's own options. They work the same for scripts and
 archives, and take precedence over `K6_DURATION` / `K6_VUS` set in the step's environment variables.
 
+They can't be combined with [k6 scenarios](https://grafana.com/docs/k6/latest/using-k6/scenarios/): a duration would
+replace all scenarios with a single default one, and the virtual users alone would be ignored. If the script (or
+archive) defines scenarios and either parameter is set, the step fails right at the start with an error, before any
+load is generated. The extension checks this with `k6 inspect`, using the step's environment variables.
+
 ## Scripts with Multiple Files
 
 The K6 actions accept either a single script (`.js`) or a [k6 archive](https://grafana.com/docs/k6/latest/misc/archive/)
