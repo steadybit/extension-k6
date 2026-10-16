@@ -10,3 +10,7 @@ archive only records `/scripts/...` paths and no details of the machine it was b
 docker run --rm -v "$PWD/archive:/scripts" -w /scripts grafana/k6:<version> archive tests/script.js -O /scripts/archive.tar
 mv archive/archive.tar archive.tar
 ```
+
+`scenarios/script.js` defines its own k6 scenario (`smoke`). The e2e tests run it as is, which works, and with the
+step's Duration or Virtual users parameter set, which the extension refuses in prepare because those can't be
+combined with k6 scenarios.

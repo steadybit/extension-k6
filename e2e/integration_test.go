@@ -45,6 +45,14 @@ func TestWithMinikube(t *testing.T) {
 			Name: "cancel k6",
 			Test: testCancelK6,
 		},
+		{
+			Name: "run k6 script with scenarios",
+			Test: testRunK6Scenarios,
+		},
+		{
+			Name: "refuse k6 script with scenarios and overrides",
+			Test: testRefuseK6ScenariosWithOverrides,
+		},
 	})
 }
 
@@ -70,6 +78,35 @@ func testRunK6Archive(t *testing.T, _ *e2e.Minikube, e *e2e.Extension) {
 	// relative import resolved and ran.
 	assert.GreaterOrEqual(t, metrics["archive_module_calls"], 1.0,
 		"the module imported via ../lib/requests.js must have run")
+}
+
+// testRunK6Scenarios runs a script that defines its own scenario, without the Duration and Virtual users
+// parameters: the script runs as written, so k6 reports its "smoke" scenario.
+func testRunK6Scenarios(t *testing.T, _ *e2e.Minikube, e *e2e.Extension) {
+	file := scenariosScript(t)
+	exec, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, struct{}{}, nil, []client.File{file})
+	require.NoError(t, err)
+	require.NoError(t, exec.Wait())
+	assert.Contains(t, string(artifactsByLabel(t, exec)[k6LogArtifact]), "smoke:", "k6 must run the script's own scenario")
+}
+
+// testRefuseK6ScenariosWithOverrides sets the Duration and Virtual users parameters for a script with scenarios.
+// k6 would replace the scenario (duration) or ignore the value (VUs), so the action errors in prepare instead.
+func testRefuseK6ScenariosWithOverrides(t *testing.T, _ *e2e.Minikube, e *e2e.Extension) {
+	for _, config := range []map[string]any{
+		{"duration": 30000},
+		{"K6_VUS": 2},
+	} {
+		_, err := e.RunActionWithFiles("com.steadybit.extension_k6.run", nil, config, nil, []client.File{scenariosScript(t)})
+		require.ErrorContains(t, err, "The VUs and Duration parameters can't be combined with k6 scenarios.", config)
+	}
+}
+
+func scenariosScript(t *testing.T) client.File {
+	t.Helper()
+	content, err := os.ReadFile("testdata/scenarios/script.js")
+	require.NoError(t, err)
+	return client.File{ParameterName: "file", FileName: "script.js", Content: content}
 }
 
 // testCancelK6 checks that cancelling a running load test stops k6. The script is meant to run far
