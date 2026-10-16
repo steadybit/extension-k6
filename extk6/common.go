@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/google/uuid"
@@ -26,6 +27,9 @@ const (
 
 	actionIdPrefix = "com.steadybit.extension_k6"
 	actionIcon     = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMSAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTkuNjY2IDE4LjMzNEgxLjMzM0w3LjQzNiA1LjUyOWwzLjY3NyAyLjY1OEwxNS45MDguODMzbDMuNzU4IDE3LjV6bS02LjcyMi0yLjc2NmguMDRjLjQ1MyAwIC44OS0uMTcyIDEuMjE3LS40ODFhMS41NjggMS41NjggMCAwMC41MjMtMS4xODQgMS40MTcgMS40MTcgMCAwMC0uNTA0LTEuMTM2IDEuNTQ2IDEuNTQ2IDAgMDAtMS4wNDctLjQ0M2gtLjAzYS41NTIuNTUyIDAgMDAtLjE1Mi4wMmwuOTY4LTEuNDE0LS43NzEtLjUzLS4zNjUuNTMtLjkzMyAxLjRjLS4xNi4yMzMtLjI5NC40MzctLjM3Ny41OC0uMDg2LjE1LS4xNi4zMDctLjIyMi40NjgtLjA3LjE3Mi0uMTA2LjM1Ni0uMTA2LjU0YTEuNTQ1IDEuNTQ1IDAgMDAuNTE3IDEuMTcxYy4zMjMuMzEuNzU1LjQ4MiAxLjIwNi40ODFsLjAzNi0uMDAyem0tNC4wOTgtMS41MjNsMS4wNjggMS40ODZoMS4xNDNMOS44IDEzLjgwN2wxLjExNi0xLjUyNS0uNzQxLS41MDQtLjMyNy40MjUtMS4wMDQgMS4zOTJ2LTIuOGwtMS0uODAxdjUuNTM3aDF2LTEuNDg4bC4wMDIuMDAyem00LjEuNTk1YS43NDIuNzQyIDAgMDEtLjUyLS4yMTIuNzE3LjcxNyAwIDAxMC0xLjAyNC43NDIuNzQyIDAgMDEuNTItLjIxMWguMDA2YS43MjkuNzI5IDAgMDEuNTE5LjIxOC42NzYuNjc2IDAgMDEuMjIyLjUwMS43My43MyAwIDAxLS4yMjIuNTE0Ljc1NC43NTQgMCAwMS0uNTI1LjIxMnYuMDAyeiIgZmlsbD0iY3VycmVudENvbG9yIi8+PC9zdmc+"
+
+	// k6VusParameter is named after the k6 option it is passed as, so it needs no mapping.
+	k6VusParameter = "K6_VUS"
 )
 
 type K6LoadTestRunState struct {
@@ -66,12 +70,31 @@ func getActionDescription(actionId string, label string, description string, hin
 				Order: new(1),
 			},
 			{
+				Name:          "duration",
+				Label:         "Duration",
+				Description:   new("How long the load test runs. Overrides the duration and stages of the script (passed as `K6_DURATION`). Leave empty to use the script's options. Can't be combined with k6 scenarios."),
+				Type:          action_kit_api.ActionParameterTypeDuration,
+				DurationUnits: new([]action_kit_api.DurationUnit{action_kit_api.DurationUnitSeconds, action_kit_api.DurationUnitMinutes, action_kit_api.DurationUnitHours}),
+				MinValue:      new(0),
+				Required:      new(false),
+				Order:         new(2),
+			},
+			{
+				Name:        k6VusParameter,
+				Label:       "Virtual users",
+				Description: new("Number of virtual users (passed as `K6_VUS`). Leave empty to use the script's options. Can't be combined with k6 scenarios."),
+				Type:        action_kit_api.ActionParameterTypeInteger,
+				MinValue:    new(1),
+				Required:    new(false),
+				Order:       new(3),
+			},
+			{
 				Name:        "environment",
 				Label:       "Environment variables",
-				Description: new("Environment variables which will be accessible in your k6 script by ${__ENV.foobar}"),
+				Description: new("Environment variables which will be accessible in your k6 script by `${__ENV.foobar}`"),
 				Type:        action_kit_api.ActionParameterTypeKeyValue,
 				Required:    new(false),
-				Order:       new(2),
+				Order:       new(4),
 			},
 		},
 		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
@@ -88,16 +111,54 @@ func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequ
 	}
 
 	state.ExecutionId = request.ExecutionId
-	state.Command = command
 
-	if config.Environment != nil {
-		for _, value := range config.Environment {
-			state.Command = append(state.Command, "--env")
-			state.Command = append(state.Command, fmt.Sprintf("%s=%s", value["key"], value["value"]))
-		}
+	envArgs := environmentArgs(config.Environment)
+	overrides := optionOverrides(request.Config)
+
+	// Duration replaces all scenarios of the script with a single default one, and VUs alone is ignored by them:
+	// neither is what the user asked for, so refuse to run instead.
+	if len(overrides) > 0 && scriptDefinesScenarios(config.File, envArgs) {
+		return &action_kit_api.PrepareResult{
+			Error: &action_kit_api.ActionKitError{
+				Title:  scenariosConflictTitle,
+				Status: extutil.Ptr(action_kit_api.Errored),
+			},
+		}, nil
 	}
 
+	// The overrides go last, so they win over the same keys set in the environment parameter.
+	state.Command = slices.Concat(command, envArgs, overrides)
 	return nil, nil
+}
+
+// environmentArgs turns the environment parameter into k6 "--env KEY=VALUE" arguments.
+func environmentArgs(environment []map[string]string) []string {
+	var args []string
+	for _, value := range environment {
+		args = append(args, "--env", fmt.Sprintf("%s=%s", value["key"], value["value"]))
+	}
+	return args
+}
+
+// optionOverrides turns the Duration and Virtual users parameters into the k6 options K6_DURATION / K6_VUS. k6 reads
+// them from --env as well, overriding the script's options (also those of an archive). Unset or 0 values are left out.
+func optionOverrides(config map[string]any) []string {
+	var args []string
+	if durationMs := extutil.ToInt64(config["duration"]); durationMs > 0 {
+		args = append(args, "--env", fmt.Sprintf("K6_DURATION=%s", formatK6Duration(durationMs)))
+	}
+	if vus := extutil.ToInt64(config[k6VusParameter]); vus > 0 {
+		args = append(args, "--env", fmt.Sprintf("%s=%d", k6VusParameter, vus))
+	}
+	return args
+}
+
+// formatK6Duration converts an ActionKit duration (milliseconds) into a k6 duration, e.g. 30000 -> "30s".
+func formatK6Duration(ms int64) string {
+	if ms%1000 == 0 {
+		return fmt.Sprintf("%ds", ms/1000)
+	}
+	return fmt.Sprintf("%dms", ms)
 }
 
 func start(state *K6LoadTestRunState, token string) (*action_kit_api.StartResult, error) {

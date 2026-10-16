@@ -274,6 +274,72 @@ func Test_fileParameter_accepts_script_and_archive(t *testing.T) {
 	}
 }
 
+func Test_optionOverrides(t *testing.T) {
+	tests := []struct {
+		name   string
+		config map[string]any
+		want   []string
+	}{
+		{"not set", map[string]any{}, nil},
+		{"null", map[string]any{"duration": nil, "K6_VUS": nil}, nil},
+		{"zero is not set", map[string]any{"duration": 0, "K6_VUS": 0}, nil},
+		{"duration", map[string]any{"duration": 30000}, []string{"--env", "K6_DURATION=30s"}},
+		{"duration in minutes", map[string]any{"duration": 5 * 60 * 1000}, []string{"--env", "K6_DURATION=300s"}},
+		{"duration with millis", map[string]any{"duration": 1500}, []string{"--env", "K6_DURATION=1500ms"}},
+		{"vus", map[string]any{"K6_VUS": 10}, []string{"--env", "K6_VUS=10"}},
+		{"both", map[string]any{"duration": 30000, "K6_VUS": 10}, []string{"--env", "K6_DURATION=30s", "--env", "K6_VUS=10"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, optionOverrides(extutil.JsonMangle(tt.config)))
+		})
+	}
+}
+
+// Duration and VUs are passed as the k6 options K6_DURATION / K6_VUS after the environment parameter, so they win.
+func Test_Prepare_duration_and_vus(t *testing.T) {
+	stubInspect(t, `{"scenarios": null}`, nil)
+	for _, action := range []action_kit_sdk.Action[K6LoadTestRunState]{NewK6LoadTestRunAction(), NewK6LoadTestCloudAction()} {
+		state, _ := prepareWith(t, action, map[string]any{
+			"file":        "/tmp/script.js",
+			"duration":    30000,
+			"K6_VUS":      10,
+			"environment": []map[string]string{{"key": "K6_DURATION", "value": "1h"}},
+		})
+		assert.Equal(t, []string{"--env", "K6_DURATION=1h", "--env", "K6_DURATION=30s", "--env", "K6_VUS=10"}, envArgsOf(state.Command), action.Describe().Id)
+	}
+}
+
+// envArgsOf returns the "--env KEY=VALUE" pairs of a k6 command.
+func envArgsOf(command []string) []string {
+	var envArgs []string
+	for i, arg := range command {
+		if arg == "--env" && i+1 < len(command) {
+			envArgs = append(envArgs, command[i:i+2]...)
+		}
+	}
+	return envArgs
+}
+
+func Test_durationAndVusParameters(t *testing.T) {
+	for _, description := range []action_kit_api.ActionDescription{
+		NewK6LoadTestRunAction().Describe(),
+		NewK6LoadTestCloudAction().Describe(),
+	} {
+		duration := description.Parameters[1]
+		assert.Equal(t, "duration", duration.Name, "the platform renders the step length from the 'duration' parameter")
+		assert.Equal(t, action_kit_api.ActionParameterTypeDuration, duration.Type)
+		assert.False(t, *duration.Required)
+		assert.Nil(t, duration.DefaultValue)
+
+		vus := description.Parameters[2]
+		assert.Equal(t, "K6_VUS", vus.Name)
+		assert.Equal(t, action_kit_api.ActionParameterTypeInteger, vus.Type)
+		assert.False(t, *vus.Required)
+		assert.Equal(t, 1, *vus.MinValue)
+	}
+}
+
 func Test_localAction_Lifecycle(t *testing.T) {
 	action := &K6LoadTestRunAction{}
 	state := K6LoadTestRunState{
@@ -305,13 +371,13 @@ func Test_localAction_Describe(t *testing.T) {
 	assert.Equal(t, action_kit_api.LoadTest, description.Kind)
 	assert.NotNil(t, description.Hint)
 	assert.Nil(t, description.TargetSelection)
-	assert.Len(t, description.Parameters, 2)
+	assert.Len(t, description.Parameters, 4)
 
 	config.Config.EnableLocationSelection = true
 	description = NewK6LoadTestRunAction().Describe()
 	require.NotNil(t, description.TargetSelection)
 	assert.Equal(t, targetType, description.TargetSelection.TargetType)
-	assert.Len(t, description.Parameters, 3)
+	assert.Len(t, description.Parameters, 5)
 }
 
 func Test_cloudAction_Describe(t *testing.T) {

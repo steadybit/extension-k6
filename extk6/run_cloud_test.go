@@ -40,7 +40,7 @@ func TestPrepareExtractsState(t *testing.T) {
 	// Then
 	require.Nil(t, result)
 	require.Nil(t, err)
-	require.Equal(t, state.Command, []string([]string{"k6", "cloud", "run", "test.js"}))
+	require.Equal(t, state.Command, []string([]string{"k6", "cloud", "run", "test.js", "--env", "K6_DURATION=60s"}))
 }
 
 func TestFailedCommandStart(t *testing.T) {

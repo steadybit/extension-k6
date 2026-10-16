@@ -43,6 +43,22 @@ The Docker image ships a custom k6 binary built with [xk6](https://github.com/gr
 | [xk6-client-tracing](https://github.com/grafana/xk6-client-tracing)                        | Distributed tracing client     |
 | [xk6-subcommand-httpbin](https://github.com/grafana/xk6-subcommand-httpbin)                | Built-in httpbin test server   |
 
+## Duration and Virtual Users
+
+Both K6 actions have two optional parameters to override the script's options without touching the script:
+
+- **Duration** – passed to k6 as `K6_DURATION` (e.g. `30s`). It replaces the script's `duration`, `stages` and
+  `iterations`, and the experiment editor uses it to show how long the step runs.
+- **Virtual users** – passed to k6 as `K6_VUS`.
+
+Leave them empty to use the script's own options. They work the same for scripts and
+archives, and take precedence over `K6_DURATION` / `K6_VUS` set in the step's environment variables.
+
+They can't be combined with [k6 scenarios](https://grafana.com/docs/k6/latest/using-k6/scenarios/): a duration would
+replace all scenarios with a single default one, and the virtual users alone would be ignored. If the script (or
+archive) defines scenarios and either parameter is set, the step fails right at the start with an error, before any
+load is generated. The extension checks this with `k6 inspect`, using the step's environment variables.
+
 ## Scripts with Multiple Files
 
 The K6 actions accept either a single script (`.js`) or a [k6 archive](https://grafana.com/docs/k6/latest/misc/archive/)
