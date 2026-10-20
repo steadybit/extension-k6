@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/steadybit/extension-k6/config"
 )
 
 func Test_substringAfter(t *testing.T) {
@@ -68,6 +70,30 @@ func Test_k6Environment(t *testing.T) {
 	}
 	for _, entry := range env {
 		if strings.HasPrefix(entry, "STEADYBIT_EXTENSION_CLOUD_API_TOKEN=") || strings.HasPrefix(entry, "SOME_OTHER_SECRET=") {
+			t.Errorf("k6Environment() leaks %q", entry)
+		}
+	}
+}
+
+func Test_k6Environment_withAllowList(t *testing.T) {
+	previous := config.Config
+	t.Cleanup(func() { config.Config = previous })
+	config.Config.K6EnvAllowList = []string{"MY_APP_URL", "STEADYBIT_EXTENSION_CLOUD_API_TOKEN"}
+
+	t.Setenv("MY_APP_URL", "http://app:8080")
+	t.Setenv("MY_APP_PASSWORD", "secret")
+	t.Setenv("STEADYBIT_EXTENSION_CLOUD_API_TOKEN", "secret")
+	t.Setenv("HTTPS_PROXY", "http://proxy:3128")
+
+	env := k6Environment()
+
+	for _, want := range []string{"MY_APP_URL=http://app:8080", "HTTPS_PROXY=http://proxy:3128"} {
+		if !slices.Contains(env, want) {
+			t.Errorf("k6Environment() is missing %q", want)
+		}
+	}
+	for _, entry := range env {
+		if strings.HasPrefix(entry, "STEADYBIT_EXTENSION_CLOUD_API_TOKEN=") || strings.HasPrefix(entry, "MY_APP_PASSWORD=") {
 			t.Errorf("k6Environment() leaks %q", entry)
 		}
 	}

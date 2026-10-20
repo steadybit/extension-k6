@@ -14,6 +14,8 @@ k6:
   cloudApiToken: ""
   # k6.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the key cloud-api-token
   existingSecret: null
+  # k6.envAllowList -- Names of additional environment variables of the extension that are passed to k6 and can be read by the scripts via __ENV, on top of the K6_*, proxy, TLS, Kubernetes and basic system variables. Exact names only, STEADYBIT_EXTENSION_* variables are ignored.
+  envAllowList: []
 
 image:
   # image.registry -- The container registry to use. Defaults to global.image.registry or ghcr.io.

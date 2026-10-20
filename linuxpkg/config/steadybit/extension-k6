@@ -9,3 +9,9 @@ STEADYBIT_EXTENSION_UNIX_SOCKET=/run/steadybit/extension-k6.sock
 # For more information visit https://github.com/steadybit/extension-kong
 #
 STEADYBIT_EXTENSION_CLOUD_API_TOKEN=
+
+#
+# (optional)
+# Comma-separated names of additional environment variables passed to k6 (exact names, STEADYBIT_EXTENSION_* are ignored).
+#
+#STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST=

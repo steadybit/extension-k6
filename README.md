@@ -80,12 +80,36 @@ By default, the platform limits uploads to 5 MB per file. Scripts rarely come cl
 CSV or JSON datasets) is bundled into the archive too. If your archive gets too large, fetch such data at runtime
 instead of bundling it.
 
+## Environment of k6
+
+k6 doesn't inherit the extension's environment. Scripts can read everything k6 gets via `__ENV`, so the extension only
+passes:
+
+- all `K6_*` variables, to configure k6 itself (e.g. outputs)
+- `PATH`, `HOME`, `TMPDIR`, `TZ`
+- `SSL_CERT_FILE`, `SSL_CERT_DIR`
+- `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` (upper and lower case)
+- `KUBERNETES_SERVICE_HOST`, `KUBERNETES_SERVICE_PORT`, `KUBECONFIG`, for the bundled xk6-kubernetes and xk6-disruptor
+- the variables listed in `STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST` (Helm value `k6.envAllowList`)
+
+The extension's own configuration and secrets (`STEADYBIT_EXTENSION_*`, e.g. `STEADYBIT_EXTENSION_CLOUD_API_TOKEN`) are
+never passed. If the allow list contains such a variable, the extension ignores it and logs a warning at startup. The
+allow list takes exact names only, no wildcards, so it's always clear which variables scripts can read.
+
+Keep in mind that `K6_*` variables, including a `K6_CLOUD_TOKEN` set on the extension, are readable by scripts as well.
+To pass values to a single step, use the step's *Environment variables* parameter instead.
+
+```bash
+--set "k6.envAllowList={MY_APP_URL,MY_APP_REGION}"
+```
+
 ## Configuration
 
 | Environment Variable                            | Helm value                | Meaning                                                                                                                                                                                              | Required | Default |
 |-------------------------------------------------|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|---------|
 | `STEADYBIT_EXTENSION_CLOUD_API_TOKEN`           | `k6.cloudApiToken`        | K6 Cloud API Token. If provided, the extension will have the option to run load tests in the k6 cloud.                                                                                               | no      |         |
 | `STEADYBIT_EXTENSION_ENABLE_LOCATION_SELECTION` | `enableLocationSelection` | By default, the platform will select a random instance when executing actions from this extension. If you enable location selection, users can optionally specify the location via target selection. | no      | false   |
+| `STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST`         | `k6.envAllowList`         | Comma-separated names of additional environment variables passed to k6, see [Environment of k6](#environment-of-k6). Exact names only, `STEADYBIT_EXTENSION_*` variables are ignored.                 | no      |         |
 | `HTTPS_PROXY`                                   | via extraEnv variables    | Configure the proxy to be used for K6 Cloud communication.                                                                                                                                           | no      |         |
 
 Beyond the settings above, this extension supports the configuration common to all Steadybit
