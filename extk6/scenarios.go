@@ -21,7 +21,10 @@ const (
 // inspectK6 runs `k6 inspect` and returns its stdout, the options of the script or archive as JSON. A variable so
 // tests can replace it.
 var inspectK6 = func(ctx context.Context, args []string) ([]byte, error) {
-	return exec.CommandContext(ctx, "k6", append([]string{"inspect"}, args...)...).Output() // NOSONAR go:S4036 - resolved via PATH like `k6 run`, since k6 lives in a different directory per install (Docker image, Linux package)
+	cmd := exec.CommandContext(ctx, "k6", append([]string{"inspect"}, args...)...) // NOSONAR go:S4036 - resolved via PATH like `k6 run`, since k6 lives in a different directory per install (Docker image, Linux package)
+	// inspect evaluates the script's init code, so it must not see the extension's environment either
+	cmd.Env = k6Environment()
+	return cmd.Output()
 }
 
 // scriptDefinesScenarios reports whether the script (or archive) at file defines k6 scenarios, evaluating its options

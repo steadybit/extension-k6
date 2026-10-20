@@ -2,6 +2,8 @@ package extk6
 
 import (
 	"reflect"
+	"slices"
+	"strings"
 	"testing"
 )
 
@@ -47,5 +49,25 @@ func Test_extractErrorFromStdOut(t *testing.T) {
 				t.Errorf("extractErrorFromStdOut() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func Test_k6Environment(t *testing.T) {
+	t.Setenv("STEADYBIT_EXTENSION_CLOUD_API_TOKEN", "secret")
+	t.Setenv("SOME_OTHER_SECRET", "secret")
+	t.Setenv("K6_PROMETHEUS_RW_SERVER_URL", "http://prometheus:9090/api/v1/write")
+	t.Setenv("HTTPS_PROXY", "http://proxy:3128")
+
+	env := k6Environment()
+
+	for _, want := range []string{"K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write", "HTTPS_PROXY=http://proxy:3128"} {
+		if !slices.Contains(env, want) {
+			t.Errorf("k6Environment() is missing %q", want)
+		}
+	}
+	for _, entry := range env {
+		if strings.HasPrefix(entry, "STEADYBIT_EXTENSION_CLOUD_API_TOKEN=") || strings.HasPrefix(entry, "SOME_OTHER_SECRET=") {
+			t.Errorf("k6Environment() leaks %q", entry)
+		}
 	}
 }
