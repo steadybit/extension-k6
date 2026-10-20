@@ -97,7 +97,10 @@ never passed. If the allow list contains such a variable, the extension ignores 
 allow list takes exact names only, no wildcards, so it's always clear which variables scripts can read.
 
 Keep in mind that `K6_*` variables, including a `K6_CLOUD_TOKEN` set on the extension, are readable by scripts as well.
-To pass values to a single step, use the step's *Environment variables* parameter instead.
+
+The filtering only applies to the extension's own environment. Variables set in the step's *Environment variables*
+parameter are passed to k6 as `--env` arguments and always reach the script, no allow list needed. Use the allow list
+only for values that should come from the deployment (e.g. set once via `extraEnv`) instead of each experiment.
 
 ```bash
 --set "k6.envAllowList={MY_APP_URL,MY_APP_REGION}"
