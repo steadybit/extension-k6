@@ -141,12 +141,12 @@ var k6EnvAllowList = []string{
 
 // k6Environment returns the environment for the k6 processes. The script can read it through __ENV and
 // /proc/self/environ, so the extension's own configuration and secrets (e.g. STEADYBIT_EXTENSION_CLOUD_API_TOKEN)
-// are left out.
+// are left out. So is K6_CLOUD_TOKEN: start adds it only for cloud runs, which need it.
 func k6Environment() []string {
 	var env []string
 	for _, entry := range os.Environ() {
 		key, _, _ := strings.Cut(entry, "=")
-		if strings.HasPrefix(key, "K6_") || slices.Contains(k6EnvAllowList, key) {
+		if (strings.HasPrefix(key, "K6_") && key != "K6_CLOUD_TOKEN") || slices.Contains(k6EnvAllowList, key) {
 			env = append(env, entry)
 		}
 	}

@@ -55,6 +55,7 @@ func Test_extractErrorFromStdOut(t *testing.T) {
 func Test_k6Environment(t *testing.T) {
 	t.Setenv("STEADYBIT_EXTENSION_CLOUD_API_TOKEN", "secret")
 	t.Setenv("SOME_OTHER_SECRET", "secret")
+	t.Setenv("K6_CLOUD_TOKEN", "secret")
 	t.Setenv("K6_PROMETHEUS_RW_SERVER_URL", "http://prometheus:9090/api/v1/write")
 	t.Setenv("HTTPS_PROXY", "http://proxy:3128")
 
@@ -66,7 +67,8 @@ func Test_k6Environment(t *testing.T) {
 		}
 	}
 	for _, entry := range env {
-		if strings.HasPrefix(entry, "STEADYBIT_EXTENSION_CLOUD_API_TOKEN=") || strings.HasPrefix(entry, "SOME_OTHER_SECRET=") {
+		if strings.HasPrefix(entry, "STEADYBIT_EXTENSION_CLOUD_API_TOKEN=") || strings.HasPrefix(entry, "SOME_OTHER_SECRET=") ||
+			strings.HasPrefix(entry, "K6_CLOUD_TOKEN=") {
 			t.Errorf("k6Environment() leaks %q", entry)
 		}
 	}
