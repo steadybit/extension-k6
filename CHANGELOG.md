@@ -2,9 +2,8 @@
 
 ## Unreleased
 
-- Breaking change: k6 scripts no longer see the extension's environment variables via `__ENV`, except `K6_*`, proxy, TLS, Kubernetes and basic system variables. Scripts that read other variables have to get them via `STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST` (Helm value `k6.envAllowList`) or the step's environment variables
-- fix: k6 no longer inherits the extension's environment; only `K6_*`, proxy, TLS, Kubernetes and basic system variables are passed, so scripts can't read secrets like `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` via `__ENV`
-- feat: `STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST` (Helm value `k6.envAllowList`) passes additional environment variables (exact names) to k6; `STEADYBIT_EXTENSION_*` entries are ignored with a warning
+- Breaking change: k6 no longer inherits the extension's environment, so scripts can't read secrets like `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` via `__ENV`. Only `K6_*`, proxy, TLS, Kubernetes and basic system variables are passed
+- feat: pass additional environment variables to k6 via `STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST` (Helm value `k6.envAllowList`)
 - feat: support k6 archives (.tar)
 - feat: optional Duration and Virtual users parameters, passed to k6 as `K6_DURATION` / `K6_VUS`; the experiment editor shows the step with its duration
 - feat: the k6 steps fail right at the start when Duration or Virtual users is set for a script that defines k6 scenarios
