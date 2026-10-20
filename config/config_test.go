@@ -25,3 +25,15 @@ func TestParseConfiguration(t *testing.T) {
 	assert.Equal(t, "steadybit", Config.KubernetesNamespace)
 	assert.Equal(t, "https://api.k6.io", Config.CloudApiBaseUrl)
 }
+
+func TestParseConfiguration_k6EnvAllowList(t *testing.T) {
+	previous := Config
+	t.Cleanup(func() { Config = previous })
+
+	t.Setenv("STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST", "MY_APP_URL, OTHER_VAR,,STEADYBIT_EXTENSION_CLOUD_API_TOKEN,steadybit_extension_foo,MY_APP_*")
+
+	ParseConfiguration()
+	ValidateConfiguration()
+
+	assert.Equal(t, []string{"MY_APP_URL", "OTHER_VAR"}, Config.K6EnvAllowList)
+}

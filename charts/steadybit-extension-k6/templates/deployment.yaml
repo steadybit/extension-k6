@@ -64,6 +64,10 @@ spec:
             - name: STEADYBIT_EXTENSION_KUBERNETES_CLUSTER_NAME
               value: {{ . | quote }}
             {{- end }}
+            {{- with .Values.k6.envAllowList }}
+            - name: STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST
+              value: {{ join "," . | quote }}
+            {{- end }}
             - name: STEADYBIT_EXTENSION_KUBERNETES_NODE_NAME
               valueFrom:
                 fieldRef:

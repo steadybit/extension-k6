@@ -116,6 +116,14 @@ tests:
         clusterName: beautiful-cluster
     asserts:
       - matchSnapshot: {}
+  - it: should pass the k6 env allow list
+    set:
+      k6:
+        envAllowList:
+          - MY_APP_URL
+          - OTHER_VAR
+    asserts:
+      - matchSnapshot: {}
   - it: should enable location selection
     set:
       enableLocationSelection: true

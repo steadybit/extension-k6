@@ -13,6 +13,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
+	"github.com/steadybit/extension-k6/config"
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extcmd"
@@ -143,12 +144,15 @@ var k6EnvAllowList = []string{
 
 // k6Environment returns the environment for the k6 processes. The script can read it through __ENV and
 // /proc/self/environ, so the extension's own configuration and secrets (e.g. STEADYBIT_EXTENSION_CLOUD_API_TOKEN)
-// are left out.
+// are left out, even if they are in the configured allow list.
 func k6Environment() []string {
 	var env []string
 	for _, entry := range os.Environ() {
 		key, _, _ := strings.Cut(entry, "=")
-		if strings.HasPrefix(key, "K6_") || slices.Contains(k6EnvAllowList, key) {
+		if strings.HasPrefix(key, "STEADYBIT_EXTENSION_") {
+			continue
+		}
+		if strings.HasPrefix(key, "K6_") || slices.Contains(k6EnvAllowList, key) || slices.Contains(config.Config.K6EnvAllowList, key) {
 			env = append(env, entry)
 		}
 	}
