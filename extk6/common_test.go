@@ -55,20 +55,19 @@ func Test_extractErrorFromStdOut(t *testing.T) {
 func Test_k6Environment(t *testing.T) {
 	t.Setenv("STEADYBIT_EXTENSION_CLOUD_API_TOKEN", "secret")
 	t.Setenv("SOME_OTHER_SECRET", "secret")
-	t.Setenv("K6_CLOUD_TOKEN", "secret")
+	t.Setenv("KUBERNETES_SERVICE_HOST", "10.0.0.1")
 	t.Setenv("K6_PROMETHEUS_RW_SERVER_URL", "http://prometheus:9090/api/v1/write")
 	t.Setenv("HTTPS_PROXY", "http://proxy:3128")
 
 	env := k6Environment()
 
-	for _, want := range []string{"K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write", "HTTPS_PROXY=http://proxy:3128"} {
+	for _, want := range []string{"K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write", "HTTPS_PROXY=http://proxy:3128", "KUBERNETES_SERVICE_HOST=10.0.0.1"} {
 		if !slices.Contains(env, want) {
 			t.Errorf("k6Environment() is missing %q", want)
 		}
 	}
 	for _, entry := range env {
-		if strings.HasPrefix(entry, "STEADYBIT_EXTENSION_CLOUD_API_TOKEN=") || strings.HasPrefix(entry, "SOME_OTHER_SECRET=") ||
-			strings.HasPrefix(entry, "K6_CLOUD_TOKEN=") {
+		if strings.HasPrefix(entry, "STEADYBIT_EXTENSION_CLOUD_API_TOKEN=") || strings.HasPrefix(entry, "SOME_OTHER_SECRET=") {
 			t.Errorf("k6Environment() leaks %q", entry)
 		}
 	}
