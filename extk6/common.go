@@ -131,6 +131,30 @@ func prepare(state *K6LoadTestRunState, request action_kit_api.PrepareActionRequ
 	return nil, nil
 }
 
+// k6EnvAllowList are the variables of the extension's environment, besides the K6_* ones configuring k6 itself, that
+// k6 needs to run.
+var k6EnvAllowList = []string{
+	"PATH", "HOME", "TMPDIR", "TZ",
+	"SSL_CERT_FILE", "SSL_CERT_DIR",
+	"HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy", "https_proxy", "no_proxy",
+	// for the bundled xk6-kubernetes and xk6-disruptor
+	"KUBERNETES_SERVICE_HOST", "KUBERNETES_SERVICE_PORT", "KUBECONFIG",
+}
+
+// k6Environment returns the environment for the k6 processes. The script can read it through __ENV and
+// /proc/self/environ, so the extension's own configuration and secrets (e.g. STEADYBIT_EXTENSION_CLOUD_API_TOKEN)
+// are left out.
+func k6Environment() []string {
+	var env []string
+	for _, entry := range os.Environ() {
+		key, _, _ := strings.Cut(entry, "=")
+		if strings.HasPrefix(key, "K6_") || slices.Contains(k6EnvAllowList, key) {
+			env = append(env, entry)
+		}
+	}
+	return env
+}
+
 // environmentArgs turns the environment parameter into k6 "--env KEY=VALUE" arguments.
 func environmentArgs(environment []map[string]string) []string {
 	var args []string
@@ -164,7 +188,7 @@ func formatK6Duration(ms int64) string {
 func start(state *K6LoadTestRunState, token string) (*action_kit_api.StartResult, error) {
 	log.Info().Msgf("Starting k6 load test with command: %s", strings.Join(state.Command, " "))
 	cmd := exec.Command(state.Command[0], state.Command[1:]...)
-	cmd.Env = os.Environ()
+	cmd.Env = k6Environment()
 	if token != "" {
 		cmd.Env = append(cmd.Env, fmt.Sprintf("K6_CLOUD_TOKEN=%s", token))
 	}
