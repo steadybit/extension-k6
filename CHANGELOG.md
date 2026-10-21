@@ -1,12 +1,17 @@
 # Changelog
 
-## Unreleased
+## v1.4.0
 
 - Breaking change: k6 no longer inherits the extension's environment, so scripts can't read secrets like `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` via `__ENV`. Only `K6_*`, proxy, TLS, Kubernetes and basic system variables are passed
+- chore(deps): bump goreleaser/goreleaser from v2.18.2 to v2.18.3
+- feat: configurable allow list for the environment passed to k6 (#222)
+- feat: optional Duration and Virtual users parameters, passed to k6 as `K6_DURATION` / `K6_VUS`; the experiment editor shows the step with its duration
+- feat: optional duration and virtual users parameters for the k6 steps (#220)
 - feat: pass additional environment variables to k6 via `STEADYBIT_EXTENSION_K6_ENV_ALLOW_LIST` (Helm value `k6.envAllowList`)
 - feat: support k6 archives (.tar)
-- feat: optional Duration and Virtual users parameters, passed to k6 as `K6_DURATION` / `K6_VUS`; the experiment editor shows the step with its duration
+- feat: support k6 archives (.tar) for scripts with multiple files (#215)
 - feat: the k6 steps fail right at the start when Duration or Virtual users is set for a script that defines k6 scenarios
+- fix: don't pass the extension's environment to k6 (#221)
 
 ## v1.3.9
 
