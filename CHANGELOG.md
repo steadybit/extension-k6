@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.4.1
+
+- build(docker): build with golang:1.27-alpine to pick up Go patch releases
+
 ## v1.4.0
 
 - Breaking change: k6 no longer inherits the extension's environment, so scripts can't read secrets like `STEADYBIT_EXTENSION_CLOUD_API_TOKEN` via `__ENV`. Only `K6_*`, proxy, TLS, Kubernetes and basic system variables are passed (#221)
