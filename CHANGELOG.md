@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.4.4
+
+- chore(deps): bump golang.org/x/net to v0.62.0
+
 ## v1.4.3
 
 - chore(deps): force patched klauspost/compress, brotli, avro and x/net in the bundled k6
