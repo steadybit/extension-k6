@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.4.5
+
+- chore(deps): bump github.com/steadybit/action-kit/go/action_kit_api/v2
+- chore(deps): bump github.com/steadybit/discovery-kit/go/discovery_kit_sdk
+- chore(deps): bump k8s.io/client-go from 0.37.1 to 0.37.2
+
 ## v1.4.4
 
 - chore(deps): bump golang.org/x/net to v0.62.0
